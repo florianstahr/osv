@@ -1,0 +1,49 @@
+{
+  "name": "osv",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/florianstahr/osv.git",
+  "author": "Florian Stahr <mail@florianstahr.com>",
+  "license": "MIT",
+  "private": false,
+  "meta": {
+    "libraryName": "OSV"
+  },
+  "scripts": {
+    "build:dev": "webpack --config webpack.development.babel.js",
+    "build:prod": "webpack --config webpack.production.babel.js",
+    "start:dev": "NODE_ENV=development node dist/index",
+    "start:prod": "NODE_ENV=production node dist/index",
+    "test": "NODE_ENV=test mocha"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
+    "@types/chai": "^4.1.7",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/mocha": "^5.2.6",
+    "@types/webpack-env": "^1.13.9",
+    "@typescript-eslint/eslint-plugin": "^1.5.0",
+    "@typescript-eslint/parser": "^1.5.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "clean-webpack-plugin": "^2.0.1",
+    "eslint": "^5.15.3",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-mocha": "^5.3.0",
+    "mocha": "^6.0.2",
+    "ts-loader": "^5.3.3",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.3.4000",
+    "webpack": "^4.29.6",
+    "webpack-build-notifier": "^0.1.31",
+    "webpack-cli": "^3.3.0",
+    "webpack-merge": "^4.2.1",
+    "webpack-node-externals": "^1.7.2"
+  }
+}
