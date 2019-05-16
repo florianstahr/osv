@@ -29,7 +29,7 @@ class ObjectSchema<Data> {
 
   protected _paths: SchemaPath<Data>[] = [];
 
-  public static types = SchemaTypes;
+  public static Types = SchemaTypes;
 
   public constructor(definition: SchemaDefinition<Data>) {
     this._original = definition;

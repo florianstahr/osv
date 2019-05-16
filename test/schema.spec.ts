@@ -20,7 +20,7 @@ describe('ObjectSchema', () => {
       const schema = new ObjectSchema({
         foo: {
           bar: {
-            foo: new ObjectSchema.types.String({}),
+            foo: new ObjectSchema.Types.String({}),
           },
         },
       });
@@ -35,7 +35,7 @@ describe('ObjectSchema', () => {
     });
 
     it('should succeed#just-schema-type', async () => {
-      const schema = new ObjectSchema(new ObjectSchema.types.String({}));
+      const schema = new ObjectSchema(new ObjectSchema.Types.String({}));
 
       return schema.validate('foo').should.to.be.fulfilled;
     });
@@ -48,7 +48,7 @@ describe('ObjectSchema', () => {
     describe('String', () => {
       const getStringObjectSchema = (
         opts: StringSchemaTypeOptions = {},
-      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.types.String(opts));
+      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.Types.String(opts));
 
       describe('required', () => {
         it('should succeed', () => getStringObjectSchema({
@@ -63,8 +63,8 @@ describe('ObjectSchema', () => {
           required: true,
         })
           .validate(undefined)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.String.validationErrorCodes.REQUIRED_BUT_MISSING,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.String.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
       });
 
@@ -81,8 +81,8 @@ describe('ObjectSchema', () => {
           oneOf: ['foo'],
         })
           .validate('bar')
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.String.validationErrorCodes.NOT_ALLOWED,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.String.validationErrorCodes.NOT_ALLOWED,
           }).message));
       });
 
@@ -99,8 +99,8 @@ describe('ObjectSchema', () => {
           empty: false,
         })
           .validate('')
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.String.validationErrorCodes.NOT_EMPTY,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.String.validationErrorCodes.NOT_EMPTY,
           }).message));
       });
 
@@ -117,8 +117,8 @@ describe('ObjectSchema', () => {
           regex: /^foo/,
         })
           .validate('barfoo')
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.String.validationErrorCodes.REGEX_FAILED,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.String.validationErrorCodes.REGEX_FAILED,
           }).message));
       });
 
@@ -135,8 +135,8 @@ describe('ObjectSchema', () => {
           length: 3,
         })
           .validate('foobar')
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.String.validationErrorCodes.LENGTH_NOT_ALLOWED,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.String.validationErrorCodes.LENGTH_NOT_ALLOWED,
           }).message));
       });
 
@@ -153,8 +153,8 @@ describe('ObjectSchema', () => {
           minLength: 4,
         })
           .validate('foo')
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.String.validationErrorCodes.TOO_SHORT,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.String.validationErrorCodes.TOO_SHORT,
           }).message));
       });
 
@@ -171,8 +171,8 @@ describe('ObjectSchema', () => {
           maxLength: 2,
         })
           .validate('foo')
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.String.validationErrorCodes.TOO_LONG,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.String.validationErrorCodes.TOO_LONG,
           }).message));
       });
     });
@@ -183,7 +183,7 @@ describe('ObjectSchema', () => {
     describe('Number', () => {
       const getNumberObjectSchema = (
         opts: NumberSchemaTypeOptions = {},
-      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.types.Number(opts));
+      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.Types.Number(opts));
 
       describe('required', () => {
         it('should succeed', () => getNumberObjectSchema({
@@ -198,8 +198,8 @@ describe('ObjectSchema', () => {
           required: true,
         })
           .validate(null)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Number.validationErrorCodes.REQUIRED_BUT_MISSING,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
       });
 
@@ -216,8 +216,8 @@ describe('ObjectSchema', () => {
           min: 6,
         })
           .validate(5)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Number.validationErrorCodes.MIN,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.MIN,
           }).message));
       });
 
@@ -234,8 +234,8 @@ describe('ObjectSchema', () => {
           max: 6,
         })
           .validate(7)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Number.validationErrorCodes.MAX,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.MAX,
           }).message));
       });
 
@@ -252,8 +252,8 @@ describe('ObjectSchema', () => {
           greater: 6,
         })
           .validate(6)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Number.validationErrorCodes.GREATER,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.GREATER,
           }).message));
       });
 
@@ -270,8 +270,8 @@ describe('ObjectSchema', () => {
           less: 6,
         })
           .validate(6)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Number.validationErrorCodes.LESS,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.LESS,
           }).message));
       });
 
@@ -288,8 +288,8 @@ describe('ObjectSchema', () => {
           integer: true,
         })
           .validate(6.1)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Number.validationErrorCodes.INTEGER,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.INTEGER,
           }).message));
       });
 
@@ -306,8 +306,8 @@ describe('ObjectSchema', () => {
           positive: true,
         })
           .validate(0)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Number.validationErrorCodes.POSITIVE,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.POSITIVE,
           }).message));
       });
 
@@ -324,8 +324,8 @@ describe('ObjectSchema', () => {
           negative: true,
         })
           .validate(0)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Number.validationErrorCodes.NEGATIVE,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.NEGATIVE,
           }).message));
       });
     });
@@ -335,7 +335,7 @@ describe('ObjectSchema', () => {
     describe('Boolean', () => {
       const getBooleanObjectSchema = (
         opts: BooleanSchemaTypeOptions = {},
-      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.types.Boolean(opts));
+      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.Types.Boolean(opts));
 
       describe('required', () => {
         it('should succeed', () => getBooleanObjectSchema({
@@ -350,8 +350,8 @@ describe('ObjectSchema', () => {
           required: true,
         })
           .validate(null)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Boolean.validationErrorCodes.REQUIRED_BUT_MISSING,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Boolean.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
       });
     });
@@ -361,8 +361,8 @@ describe('ObjectSchema', () => {
     describe('Array', () => {
       const getArrayObjectSchema = (
         opts: ArraySchemaTypeOptions | Pick<ArraySchemaTypeOptions, Exclude<keyof ArraySchemaTypeOptions, 'item'>>,
-      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.types.Array({
-        item: new ObjectSchema(new ObjectSchema.types.String({ required: true })),
+      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.Types.Array({
+        item: new ObjectSchema(new ObjectSchema.Types.String({ required: true })),
         ...opts,
       }));
 
@@ -379,8 +379,8 @@ describe('ObjectSchema', () => {
           required: true,
         })
           .validate(null)
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Array.validationErrorCodes.REQUIRED_BUT_MISSING,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Array.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
       });
 
@@ -397,8 +397,8 @@ describe('ObjectSchema', () => {
           min: 2,
         })
           .validate(['foo'])
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Array.validationErrorCodes.MIN,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Array.validationErrorCodes.MIN,
           }).message));
       });
 
@@ -415,8 +415,8 @@ describe('ObjectSchema', () => {
           max: 1,
         })
           .validate(['foo', 'bar'])
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Array.validationErrorCodes.MAX,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Array.validationErrorCodes.MAX,
           }).message));
       });
 
@@ -433,18 +433,18 @@ describe('ObjectSchema', () => {
           length: 2,
         })
           .validate(['foo'])
-          .should.be.rejectedWith(new ObjectSchema.types.Base.ValidationError({
-            code: ObjectSchema.types.Array.validationErrorCodes.LENGTH_NOT_ALLOWED,
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Array.validationErrorCodes.LENGTH_NOT_ALLOWED,
           }).message));
       });
 
       describe('multiple items', () => {
         it('should succeed', () => new ObjectSchema({
-          foo: new ObjectSchema.types.Array({
+          foo: new ObjectSchema.Types.Array({
             required: true,
             length: 2,
             item: new ObjectSchema({
-              bar: new ObjectSchema.types.String({
+              bar: new ObjectSchema.Types.String({
                 required: true,
                 oneOf: ['foo', 'bar'],
               }),
@@ -467,11 +467,11 @@ describe('ObjectSchema', () => {
           }).should.be.fulfilled);
 
         it('should fail', () => new ObjectSchema({
-          foo: new ObjectSchema.types.Array({
+          foo: new ObjectSchema.Types.Array({
             required: true,
             length: 2,
             item: new ObjectSchema({
-              bar: new ObjectSchema.types.String({
+              bar: new ObjectSchema.Types.String({
                 required: true,
                 oneOf: ['foo', 'bar'],
               }),
@@ -485,7 +485,7 @@ describe('ObjectSchema', () => {
             ],
           })
           .catch((e: ValidationError) => {
-            expect(e.code).to.equal(ObjectSchema.types.String.validationErrorCodes.NOT_ALLOWED);
+            expect(e.code).to.equal(ObjectSchema.Types.String.validationErrorCodes.NOT_ALLOWED);
             expect(e.path).to.equal('foo.1.bar');
           })
           .should.be.fulfilled);
@@ -496,17 +496,17 @@ describe('ObjectSchema', () => {
   describe('Schema & all Types', () => {
     it('should succeed#optional-object-prop-missing', async () => {
       const schema = new ObjectSchema({
-        id: new ObjectSchema.types.String({ required: true }),
-        username: new ObjectSchema.types.String({ required: true }),
-        email: new ObjectSchema.types.String({ required: true }),
+        id: new ObjectSchema.Types.String({ required: true }),
+        username: new ObjectSchema.Types.String({ required: true }),
+        email: new ObjectSchema.Types.String({ required: true }),
         info: {
           person: {
-            firstName: new ObjectSchema.types.String({ }),
-            lastName: new ObjectSchema.types.String({ }),
+            firstName: new ObjectSchema.Types.String({ }),
+            lastName: new ObjectSchema.Types.String({ }),
           },
         },
-        followers: new ObjectSchema.types.Array({
-          item: new ObjectSchema(new ObjectSchema.types.String({ required: true })),
+        followers: new ObjectSchema.Types.Array({
+          item: new ObjectSchema(new ObjectSchema.Types.String({ required: true })),
         }),
       });
 
