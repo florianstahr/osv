@@ -1,7 +1,7 @@
 
 # osv - Object Schema Validation
 
-[![npm](https://img.shields.io/npm/v/osv.svg)](https://npmjs.com/package/osv) [![GitHub](https://img.shields.io/github/license/florianstahr/osv.svg?colorB=brightgreen)](https://github.com/florianstahr/osv)
+[![npm](https://img.shields.io/npm/v/osv.svg)](https://npmjs.com/package/osv) [![GitHub](https://img.shields.io/github/license/florianstahr/osv.svg?color=brightgreen)](https://github.com/florianstahr/osv)
 
 This library can be used for validating JavaScript objects or other data types like numbers, strings, booleans or arrays.
 It is very strongly inspired by [@hapijs/joi](https://github.com/hapijs/joi) and
