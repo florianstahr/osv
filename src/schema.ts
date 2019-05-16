@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign,@typescript-eslint/array-type */
 import BaseSchemaType from './schema-types/base.schema-type';
 import SchemaTypes from './schema-types';
 

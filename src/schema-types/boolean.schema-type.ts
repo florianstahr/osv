@@ -1,5 +1,6 @@
 import BaseSchemaType from './base.schema-type';
 import { BooleanSchemaTypeOptions } from './types';
+import { DeepPartial } from '../helpers.types';
 
 class BooleanSchemaType<Data> extends BaseSchemaType<Data, BooleanSchemaTypeOptions> {
   public static validationErrorCodes = {
@@ -11,7 +12,9 @@ class BooleanSchemaType<Data> extends BaseSchemaType<Data, BooleanSchemaTypeOpti
     super(options);
   }
 
-  protected _validateWithOptions = (value: any, data: Data, path: string[]): Promise<any> => {
+  protected _validateWithOptions = (
+    value: any, data: DeepPartial<Data>, path: string[],
+  ): Promise<any> => {
     if (this._checkRequired(value, data) && typeof value !== 'boolean') {
       return this._validateError(BooleanSchemaType.validationErrorCodes.REQUIRED_BUT_MISSING, {
         value,

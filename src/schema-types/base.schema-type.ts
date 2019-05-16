@@ -1,4 +1,5 @@
 import { BaseSchemaTypeOptions } from './types';
+import { DeepPartial } from '../helpers.types';
 
 export interface ValidationErrorArgs {
   code: string;
@@ -35,35 +36,35 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
     this._options = options;
   }
 
-  public validate = (value: any, data: Data, path: string[]): Promise<any> => {
+  public validate = (value: any, data: DeepPartial<Data>, path: string[]): Promise<Data> => {
     const val = this._preValidate(value, data);
 
     return this._validateWithOptions(val, data, path)
       .then(result => Promise.resolve(this._postValidate(result, data)));
   };
 
-  protected _preValidate = (value: any, data: Data) => {
+  protected _preValidate = (value: any, data: DeepPartial<Data>) => {
     const {
       pre,
     } = this._options;
 
     if (pre && typeof pre.validate === 'function') {
-      return pre.validate<Data>(value, data);
+      return pre.validate<DeepPartial<Data>>(value, data);
     }
     return value;
   };
 
   protected _validateWithOptions = (
-    value: any, data: Data, path: string[],
+    value: any, data: DeepPartial<Data>, path: string[],
   ) => Promise.resolve(value);
 
-  protected _postValidate = (value: any, data: Data) => {
+  protected _postValidate = (value: any, data: DeepPartial<Data>) => {
     const {
       post,
     } = this._options;
 
     if (post && typeof post.validate === 'function') {
-      return post.validate<Data>(value, data);
+      return post.validate<DeepPartial<Data>>(value, data);
     }
     return value;
   };
@@ -76,7 +77,7 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
   }));
 
   protected _checkRequired = (
-    value: any, data: Data,
+    value: any, data: DeepPartial<Data>,
   ): boolean => {
     const { required } = this._options;
 

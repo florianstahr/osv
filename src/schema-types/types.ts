@@ -1,14 +1,17 @@
 import ObjectSchema from '../schema';
+import { DeepPartial } from '../helpers.types';
 
-export type RequiredSchemaTypeCallback = <D = any>(value: any, data: D) => boolean;
+export type RequiredSchemaTypeCallback = <Data = any>(
+  value: any, data: DeepPartial<Data>,
+) => boolean;
 
 export interface BaseSchemaTypeOptions {
   required?: boolean | RequiredSchemaTypeCallback;
   pre?: {
-    validate?: <D = any>(value: any, data: D) => any;
+    validate?: <Data = any>(value: any, data: DeepPartial<Data>) => any;
   };
   post?: {
-    validate?: <D = any>(value: any, data: D) => any;
+    validate?: <Data = any>(value: any, data: DeepPartial<Data>) => any;
   };
 }
 

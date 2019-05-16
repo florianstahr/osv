@@ -1,5 +1,6 @@
 import BaseSchemaType from './base.schema-type';
 import { StringSchemaTypeOptions } from './types';
+import { DeepPartial } from '../helpers.types';
 
 class StringSchemaType<Data> extends BaseSchemaType<Data, StringSchemaTypeOptions> {
   public static validationErrorCodes = {
@@ -17,7 +18,9 @@ class StringSchemaType<Data> extends BaseSchemaType<Data, StringSchemaTypeOption
     super(options);
   }
 
-  protected _validateWithOptions = (value: any, data: Data, path: string[]): Promise<any> => {
+  protected _validateWithOptions = (
+    value: any, data: DeepPartial<Data>, path: string[],
+  ): Promise<any> => {
     const {
       empty = true, oneOf, regex, length, minLength, maxLength,
     } = this._options;

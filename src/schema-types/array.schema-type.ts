@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop,no-loop-func */
 import BaseSchemaType, { ValidationError } from './base.schema-type';
 import { ArraySchemaTypeOptions } from './types';
+import { DeepPartial } from '../helpers.types';
 
 class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions> {
   public static validationErrorCodes = {
@@ -12,7 +13,9 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
     ITEM_SCHEMA_MISSING: 'array/item-schema-missing',
   };
 
-  protected _validateWithOptions = (value: any, data: Data, path: string[]): Promise<any> => {
+  protected _validateWithOptions = (
+    value: any, data: DeepPartial<Data>, path: string[],
+  ): Promise<any> => {
     const {
       min, max, length, item,
     } = this._options;

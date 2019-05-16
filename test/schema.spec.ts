@@ -48,7 +48,7 @@ describe('ObjectSchema', () => {
     describe('String', () => {
       const getStringObjectSchema = (
         opts: StringSchemaTypeOptions = {},
-      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.Types.String(opts));
+      ): ObjectSchema<string> => new ObjectSchema<string>(new ObjectSchema.Types.String(opts));
 
       describe('required', () => {
         it('should succeed', () => getStringObjectSchema({
@@ -183,7 +183,7 @@ describe('ObjectSchema', () => {
     describe('Number', () => {
       const getNumberObjectSchema = (
         opts: NumberSchemaTypeOptions = {},
-      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.Types.Number(opts));
+      ): ObjectSchema<number> => new ObjectSchema<number>(new ObjectSchema.Types.Number(opts));
 
       describe('required', () => {
         it('should succeed', () => getNumberObjectSchema({
@@ -335,7 +335,7 @@ describe('ObjectSchema', () => {
     describe('Boolean', () => {
       const getBooleanObjectSchema = (
         opts: BooleanSchemaTypeOptions = {},
-      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.Types.Boolean(opts));
+      ): ObjectSchema<boolean> => new ObjectSchema<boolean>(new ObjectSchema.Types.Boolean(opts));
 
       describe('required', () => {
         it('should succeed', () => getBooleanObjectSchema({
@@ -361,8 +361,8 @@ describe('ObjectSchema', () => {
     describe('Array', () => {
       const getArrayObjectSchema = (
         opts: ArraySchemaTypeOptions | Pick<ArraySchemaTypeOptions, Exclude<keyof ArraySchemaTypeOptions, 'item'>>,
-      ): ObjectSchema<string> => new ObjectSchema(new ObjectSchema.Types.Array({
-        item: new ObjectSchema(new ObjectSchema.Types.String({ required: true })),
+      ): ObjectSchema<string[]> => new ObjectSchema<string[]>(new ObjectSchema.Types.Array({
+        item: new ObjectSchema<string>(new ObjectSchema.Types.String({ required: true })),
         ...opts,
       }));
 
@@ -495,7 +495,20 @@ describe('ObjectSchema', () => {
 
   describe('Schema & all Types', () => {
     it('should succeed#optional-object-prop-missing', async () => {
-      const schema = new ObjectSchema({
+      interface TestSchema {
+        id: string;
+        username: string;
+        email: string;
+        info: {
+          person: {
+            firstName?: string;
+            lastName?: string;
+          };
+        };
+        followers: string[];
+      }
+
+      const schema = new ObjectSchema<TestSchema>({
         id: new ObjectSchema.Types.String({ required: true }),
         username: new ObjectSchema.Types.String({ required: true }),
         email: new ObjectSchema.Types.String({ required: true }),
