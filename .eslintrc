@@ -15,7 +15,8 @@
   "rules": {
     "indent": "off",
     "@typescript-eslint/indent": ["error", 2],
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   },
   "plugins": ["@typescript-eslint", "mocha"]
 }
