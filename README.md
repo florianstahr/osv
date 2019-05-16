@@ -1,5 +1,5 @@
 
-# osv
+# osv - Object Schema Validation
 
 [![npm](https://img.shields.io/npm/v/osv.svg)](https://npmjs.com/package/osv) [![GitHub](https://img.shields.io/github/license/florianstahr/osv.svg?colorB=brightgreen)](https://github.com/florianstahr/osv)
 
