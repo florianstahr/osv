@@ -1,4 +1,6 @@
 
+import ObjectSchema from './schema';
+
 export {
   ArraySchemaTypeOptions,
   BaseSchemaTypeOptions,
@@ -10,7 +12,6 @@ export {
 } from './schema-types/types';
 
 export {
-  default as ObjectSchema,
   SchemaDefinitionObject,
   SchemaValidateArgs,
   SchemaDefinition,
@@ -40,3 +41,5 @@ export {
 export {
   default as StringSchemaType,
 } from './schema-types/string.schema-type';
+
+export default ObjectSchema;

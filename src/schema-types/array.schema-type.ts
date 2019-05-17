@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop,no-loop-func */
-import BaseSchemaType, { ValidationError } from './base.schema-type';
+import BaseSchemaType, { InternalValidationResult } from './base.schema-type';
 import { ArraySchemaTypeOptions } from './types';
 import { DeepPartial } from '../helpers.types';
 
@@ -15,7 +15,7 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
 
   protected _validateWithOptions = (
     value: any, data: DeepPartial<Data>, path: string[],
-  ): Promise<any> => {
+  ): InternalValidationResult<any> => {
     const {
       min, max, length, item,
     } = this._options;
@@ -71,34 +71,35 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
       return this._validateArrayItems(value, path);
     }
 
-    return Promise.resolve(value);
+    return { value };
   };
 
-  protected _validateArrayItems = async (arrayItems: any[], path: string[]): Promise<any[]> => {
+  protected _validateArrayItems = (
+    arrayItems: any[], path: string[],
+  ): InternalValidationResult<any> => {
     const { item } = this._options;
     const results: any[] = [];
-    let error: ValidationError | undefined;
-    for (let i = 0; i < arrayItems.length; i += 1) {
-      await item.validate(arrayItems[i])
-        .then((validatedItem) => {
-          results.push(validatedItem);
-          return Promise.resolve(true);
-        })
-        .catch((e) => {
-          error = e;
-          return Promise.resolve(false);
-        });
 
-      if (error) {
-        return Promise.reject(new ValidationError({
-          code: error.code,
-          value: error.value,
-          path: error.path ? [...path, i.toString(), ...error.path.split('.')] : undefined,
-        }));
+    for (let i = 0; i < arrayItems.length; i += 1) {
+      const validatedItem: InternalValidationResult<any> = item.validate(arrayItems[i]);
+
+      if (validatedItem.error) {
+        return this._validateError(validatedItem.error.code, {
+          value: validatedItem.error.value,
+          path: validatedItem.error.path ? [
+            ...path,
+            i.toString(),
+            ...validatedItem.error.path.split('.'),
+          ] : [],
+        });
       }
+
+      results.push(validatedItem.value);
     }
 
-    return Promise.resolve(results);
+    return {
+      value: results,
+    };
   };
 }
 
