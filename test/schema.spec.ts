@@ -31,13 +31,13 @@ describe('ObjectSchema', () => {
             foo: 'bar',
           },
         },
-      }).should.to.be.fulfilled;
+      }).exec().should.to.be.fulfilled;
     });
 
     it('should succeed#just-schema-type', async () => {
       const schema = new ObjectSchema(new ObjectSchema.Types.String({}));
 
-      return schema.validate('foo').should.to.be.fulfilled;
+      return schema.validate('foo').exec().should.to.be.fulfilled;
     });
   });
 
@@ -54,7 +54,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           required: true,
         })
-          .validate('')
+          .validate('').exec()
           .then((data) => {
             expect(data).to.equal('');
           }).should.be.fulfilled);
@@ -62,7 +62,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           required: true,
         })
-          .validate(undefined)
+          .validate(undefined).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
@@ -72,7 +72,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           oneOf: ['foo', 'bar'],
         })
-          .validate('foo')
+          .validate('foo').exec()
           .then((data) => {
             expect(data).to.equal('foo');
           }).should.be.fulfilled);
@@ -80,7 +80,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           oneOf: ['foo'],
         })
-          .validate('bar')
+          .validate('bar').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.NOT_ALLOWED,
           }).message));
@@ -90,7 +90,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           empty: true,
         })
-          .validate('')
+          .validate('').exec()
           .then((data) => {
             expect(data).to.equal('');
           }).should.be.fulfilled);
@@ -98,7 +98,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           empty: false,
         })
-          .validate('')
+          .validate('').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.NOT_EMPTY,
           }).message));
@@ -108,7 +108,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           regex: /^foo/,
         })
-          .validate('foobar')
+          .validate('foobar').exec()
           .then((data) => {
             expect(data).to.equal('foobar');
           }).should.be.fulfilled);
@@ -116,7 +116,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           regex: /^foo/,
         })
-          .validate('barfoo')
+          .validate('barfoo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.REGEX_FAILED,
           }).message));
@@ -126,7 +126,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           length: 3,
         })
-          .validate('foo')
+          .validate('foo').exec()
           .then((data) => {
             expect(data).to.equal('foo');
           }).should.be.fulfilled);
@@ -134,7 +134,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           length: 3,
         })
-          .validate('foobar')
+          .validate('foobar').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.LENGTH_NOT_ALLOWED,
           }).message));
@@ -144,7 +144,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           minLength: 3,
         })
-          .validate('foo')
+          .validate('foo').exec()
           .then((data) => {
             expect(data).to.equal('foo');
           }).should.be.fulfilled);
@@ -152,7 +152,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           minLength: 4,
         })
-          .validate('foo')
+          .validate('foo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.TOO_SHORT,
           }).message));
@@ -162,7 +162,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           maxLength: 3,
         })
-          .validate('foo')
+          .validate('foo').exec()
           .then((data) => {
             expect(data).to.equal('foo');
           }).should.be.fulfilled);
@@ -170,7 +170,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           maxLength: 2,
         })
-          .validate('foo')
+          .validate('foo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.TOO_LONG,
           }).message));
@@ -189,7 +189,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           required: true,
         })
-          .validate(6.12765890)
+          .validate(6.12765890).exec()
           .then((data) => {
             expect(data).to.equal(6.12765890);
           }).should.be.fulfilled);
@@ -197,7 +197,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           required: true,
         })
-          .validate(null)
+          .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
@@ -207,7 +207,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           min: 6,
         })
-          .validate(6)
+          .validate(6).exec()
           .then((data) => {
             expect(data).to.equal(6);
           }).should.be.fulfilled);
@@ -215,7 +215,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           min: 6,
         })
-          .validate(5)
+          .validate(5).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.MIN,
           }).message));
@@ -225,7 +225,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           max: 6,
         })
-          .validate(6)
+          .validate(6).exec()
           .then((data) => {
             expect(data).to.equal(6);
           }).should.be.fulfilled);
@@ -233,7 +233,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           max: 6,
         })
-          .validate(7)
+          .validate(7).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.MAX,
           }).message));
@@ -243,7 +243,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           greater: 6,
         })
-          .validate(6.1)
+          .validate(6.1).exec()
           .then((data) => {
             expect(data).to.equal(6.1);
           }).should.be.fulfilled);
@@ -251,7 +251,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           greater: 6,
         })
-          .validate(6)
+          .validate(6).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.GREATER,
           }).message));
@@ -261,7 +261,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           less: 6,
         })
-          .validate(5.99)
+          .validate(5.99).exec()
           .then((data) => {
             expect(data).to.equal(5.99);
           }).should.be.fulfilled);
@@ -269,7 +269,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           less: 6,
         })
-          .validate(6)
+          .validate(6).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.LESS,
           }).message));
@@ -279,7 +279,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           integer: true,
         })
-          .validate(6)
+          .validate(6).exec()
           .then((data) => {
             expect(data).to.equal(6);
           }).should.be.fulfilled);
@@ -287,7 +287,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           integer: true,
         })
-          .validate(6.1)
+          .validate(6.1).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.INTEGER,
           }).message));
@@ -297,7 +297,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           positive: true,
         })
-          .validate(6)
+          .validate(6).exec()
           .then((data) => {
             expect(data).to.equal(6);
           }).should.be.fulfilled);
@@ -305,7 +305,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           positive: true,
         })
-          .validate(0)
+          .validate(0).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.POSITIVE,
           }).message));
@@ -315,7 +315,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           negative: true,
         })
-          .validate(-6)
+          .validate(-6).exec()
           .then((data) => {
             expect(data).to.equal(-6);
           }).should.be.fulfilled);
@@ -323,7 +323,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           negative: true,
         })
-          .validate(0)
+          .validate(0).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.NEGATIVE,
           }).message));
@@ -341,7 +341,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getBooleanObjectSchema({
           required: true,
         })
-          .validate(false)
+          .validate(false).exec()
           .then((data) => {
             expect(data).to.equal(false);
           }).should.be.fulfilled);
@@ -349,7 +349,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getBooleanObjectSchema({
           required: true,
         })
-          .validate(null)
+          .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Boolean.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
@@ -370,7 +370,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           required: true,
         })
-          .validate(['foo'])
+          .validate(['foo']).exec()
           .then((data) => {
             expect(data).to.eql(['foo']);
           }).should.be.fulfilled);
@@ -378,7 +378,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           required: true,
         })
-          .validate(null)
+          .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
@@ -388,7 +388,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           min: 2,
         })
-          .validate(['foo', 'bar'])
+          .validate(['foo', 'bar']).exec()
           .then((data) => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
@@ -396,7 +396,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           min: 2,
         })
-          .validate(['foo'])
+          .validate(['foo']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.MIN,
           }).message));
@@ -406,7 +406,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           max: 2,
         })
-          .validate(['foo', 'bar'])
+          .validate(['foo', 'bar']).exec()
           .then((data) => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
@@ -414,7 +414,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           max: 1,
         })
-          .validate(['foo', 'bar'])
+          .validate(['foo', 'bar']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.MAX,
           }).message));
@@ -424,7 +424,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           length: 2,
         })
-          .validate(['foo', 'bar'])
+          .validate(['foo', 'bar']).exec()
           .then((data) => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
@@ -432,7 +432,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           length: 2,
         })
-          .validate(['foo'])
+          .validate(['foo']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.LENGTH_NOT_ALLOWED,
           }).message));
@@ -456,7 +456,7 @@ describe('ObjectSchema', () => {
               { bar: 'foo' },
               { bar: 'bar' },
             ],
-          })
+          }).exec()
           .then((data) => {
             expect(data).to.eql({
               foo: [
@@ -483,7 +483,7 @@ describe('ObjectSchema', () => {
               { bar: 'foo' },
               { bar: 'ba' },
             ],
-          })
+          }).exec()
           .catch((e: ValidationError) => {
             expect(e.code).to.equal(ObjectSchema.Types.String.validationErrorCodes.NOT_ALLOWED);
             expect(e.path).to.equal('foo.1.bar');
@@ -528,7 +528,7 @@ describe('ObjectSchema', () => {
         username: 'foo',
         email: 'foo@bar.com',
         followers: ['222222'],
-      })
+      }).exec()
         .should.to.be.fulfilled;
     });
   });

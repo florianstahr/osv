@@ -1,5 +1,8 @@
 /* eslint-disable no-param-reassign,@typescript-eslint/array-type */
-import BaseSchemaType from './schema-types/base.schema-type';
+import BaseSchemaType, {
+  InternalValidationResult, ValidationError,
+  ValidationResult,
+} from './schema-types/base.schema-type';
 import SchemaTypes from './schema-types';
 
 export type Validator<Data> = BaseSchemaType<Data>;
@@ -31,18 +34,34 @@ class ObjectSchema<Data> {
 
   public static Types = SchemaTypes;
 
+  public static validationErrorCodes = {
+    UNKNOWN: 'schema/unknown',
+  };
+
   public constructor(definition: SchemaDefinition<Data>) {
     this._original = definition;
 
     this._parsedTree = this._parseSchemaDefinition(definition);
   }
 
-  public validate = (value: any): Promise<Data> => this._validate({
-    value,
-    data: value,
-    schema: this._parsedTree,
-    path: [],
-  });
+  public validate = (value: any): ValidationResult<Data> => {
+    const result = this._validate({
+      value,
+      data: value,
+      schema: this._parsedTree,
+      path: [],
+    });
+
+    if (result !== null) {
+      return this._makeValidationResult(result);
+    }
+
+    return this._makeValidationResult({
+      error: new ValidationError({
+        code: ObjectSchema.validationErrorCodes.UNKNOWN,
+      }),
+    });
+  };
 
   public isValidValidator = (validator: any): boolean => validator instanceof SchemaTypes.Base;
 
@@ -84,35 +103,43 @@ class ObjectSchema<Data> {
     {
       value, data, schema, path,
     }: SchemaValidateArgs<Data>,
-  ): Promise<any> => new Promise((resolve, reject) => {
+  ): InternalValidationResult<any> | null => {
     if (schema instanceof BaseSchemaType) {
-      schema.validate(value, data, path)
-        .then((val) => {
-          resolve(val);
-          resolve();
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    } else if (typeof schema === 'object') {
-      const validated: { [key: string]: any } = {};
-      Promise.all(Object.keys(schema).map(schemaKey => this._validate({
-        value: value && value[schemaKey] ? value[schemaKey] : undefined,
-        data,
-        schema: schema[schemaKey],
-        path: [...path, schemaKey],
-      }).then((val) => {
-        if (val !== undefined) {
-          validated[schemaKey] = val;
-        }
-      })))
-        .then(() => {
-          resolve(validated);
-        })
-        .catch((e) => {
-          reject(e);
-        });
+      return schema.validate(value, data, path);
     }
+
+    if (typeof schema === 'object') {
+      const validated: { [key: string]: any } = {};
+
+      const keys = Object.keys(schema);
+
+      for (let i = 0; i < keys.length; i += 1) {
+        const result = this._validate({
+          value: value && value[keys[i]] ? value[keys[i]] : undefined,
+          data,
+          schema: schema[keys[i]],
+          path: [...path, keys[i]],
+        });
+
+        if (result === null || (result && result.error)) {
+          return result;
+        }
+
+        validated[keys[i]] = result.value;
+      }
+
+      return { value: validated };
+    }
+
+    return null;
+  };
+
+  protected _makeValidationResult = (
+    result: InternalValidationResult<Data>,
+  ): ValidationResult<Data> => ({
+    ...result,
+    exec: (): Promise<Data> => (result.error
+      ? Promise.reject(result.error) : Promise.resolve<Data>(result.value as Data)),
   });
 }
 

@@ -8,7 +8,7 @@ It is very strongly inspired by [@hapijs/joi](https://github.com/hapijs/joi) and
 [mongoose](https://github.com/Automattic/mongoose) schema validation.
 
 ```typescript
-import { ObjectSchema } from 'osv';
+import ObjectSchema from 'osv';
 
 const { String, Array } = ObjectSchema.Types;
 
@@ -28,7 +28,7 @@ const schema = new ObjectSchema({
   }),
 });
 
-schema.validate({
+const result = schema.validate({
   users: [
     {
       username: 'tomato12',
@@ -39,7 +39,9 @@ schema.validate({
       role: 'admin',
     },
   ],
-})
+}); // { value?: Data, error?: ValidationError, exec: () => Promise<Data> }
+
+result.exec()
   .then((value) => {
     console.log(value); // the validated value
 
@@ -95,7 +97,7 @@ type SchemaDefinition<Data> = SchemaDefinitionObject<Data> | Validator<Data>;
 Simply define your object schema and create an `ObjectSchema` instance.
 
 ```typescript
-import { ObjectSchema } from 'osv';
+import ObjectSchema from 'osv';
 const { String, Array } = ObjectSchema.Types;
 
 interface User {
@@ -122,17 +124,25 @@ const definition: SchemaDefinition<User> = {
 const schema = new ObjectSchema<User>(definition);
 ```
 
-After that you can validate objects.
+After that you can validate objects. The `validate` method returns an object with the following schema:
 
 ```typescript
+// Data: the data type of the validated value
+type ValidationResult<Data> = {
+  value?: Data;
+  error?: ValidationError;
+  exec: () => Promise<Data>;
+}
+```
 
+```typescript
 const user1 = {
   username: 'tomato',
   role: 'owner',
   followers: ['apple'],
 };
 
-schema.validate(user1)
+schema.validate(user1).exec()
   .then((user) => {
     // use validated user
     const username = user.username;
@@ -144,7 +154,7 @@ const user2 = {
   followers: ['apple'],
 };
 
-schema.validate(user1)
+schema.validate(user1).exec()
   .catch((e) => {
     // ValidationError
     // e.message: 'There was an error while validating: string/not-allowed'
@@ -252,7 +262,7 @@ schema.validate({
   username: 'foo',
   email: 'foo@bar.com',
   followers: ['222222'],
-})
+}).exec()
   .then((result) => {
     // result:
     /*

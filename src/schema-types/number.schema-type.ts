@@ -1,4 +1,4 @@
-import BaseSchemaType from './base.schema-type';
+import BaseSchemaType, { InternalValidationResult } from './base.schema-type';
 import { NumberSchemaTypeOptions } from './types';
 import { DeepPartial } from '../helpers.types';
 
@@ -21,7 +21,7 @@ class NumberSchemaType<Data> extends BaseSchemaType<Data, NumberSchemaTypeOption
 
   protected _validateWithOptions = (
     value: any, data: DeepPartial<Data>, path: string[],
-  ): Promise<any> => {
+  ): InternalValidationResult<any> => {
     const {
       min, max, greater, less, integer, positive, negative,
     } = this._options;
@@ -99,7 +99,7 @@ class NumberSchemaType<Data> extends BaseSchemaType<Data, NumberSchemaTypeOption
       }
     }
 
-    return Promise.resolve(value);
+    return { value };
   };
 }
 
