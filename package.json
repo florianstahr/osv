@@ -15,7 +15,7 @@
     "type"
   ],
   "meta": {
-    "libraryName": "OSV"
+    "libraryName": "ObjectSchema"
   },
   "scripts": {
     "build:dev": "webpack --config webpack.development.babel.js",
