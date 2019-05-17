@@ -27,6 +27,15 @@ export interface ValidationErrorOpts {
   path: string[];
 }
 
+export interface InternalValidationResult<Data = any> {
+  error?: ValidationError;
+  value?: Data;
+}
+
+export interface ValidationResult<Data> extends InternalValidationResult<Data> {
+  exec: () => Promise<Data>;
+}
+
 class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTypeOptions> {
   protected _options: Options;
 
@@ -36,11 +45,21 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
     this._options = options;
   }
 
-  public validate = (value: any, data: DeepPartial<Data>, path: string[]): Promise<Data> => {
+  public validate = (
+    value: any, data: DeepPartial<Data>, path: string[],
+  ): InternalValidationResult<Data> => {
     const val = this._preValidate(value, data);
 
-    return this._validateWithOptions(val, data, path)
-      .then(result => Promise.resolve(this._postValidate(result, data)));
+    const result: InternalValidationResult<Data> = this._validateWithOptions(val, data, path);
+
+    if (result.error) {
+      return result;
+    }
+
+    return {
+      ...result,
+      value: this._postValidate(result.value, data),
+    };
   };
 
   protected _preValidate = (value: any, data: DeepPartial<Data>) => {
@@ -56,7 +75,7 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
 
   protected _validateWithOptions = (
     value: any, data: DeepPartial<Data>, path: string[],
-  ) => Promise.resolve(value);
+  ): InternalValidationResult<any> => ({ value });
 
   protected _postValidate = (value: any, data: DeepPartial<Data>) => {
     const {
@@ -71,10 +90,12 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
 
   protected _validateError = (
     code: string, opts: ValidationErrorOpts,
-  ): Promise<never> => Promise.reject(new ValidationError({
-    code,
-    ...opts,
-  }));
+  ): InternalValidationResult<any> => ({
+    error: new ValidationError({
+      code,
+      ...opts,
+    }),
+  });
 
   protected _checkRequired = (
     value: any, data: DeepPartial<Data>,
