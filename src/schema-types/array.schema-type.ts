@@ -7,6 +7,7 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'array/required-but-missing',
     NOT_OF_TYPE: 'array/not-of-type',
+    NULL_NOT_ALLOWED: 'array/null-not-allowed',
     MIN: 'array/too-short',
     MAX: 'array/too-long',
     LENGTH_NOT_ALLOWED: 'array/length-not-allowed',
@@ -17,9 +18,10 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
     value: any, data: DeepPartial<Data>, path: string[],
   ): InternalValidationResult<any> => {
     const {
-      min, max, length, item,
+      allowNull, min, max, length, item,
     } = this._options;
 
+    // allowNull: allow value to be null
     // min: at least ... items
     // max: ... items at maximum
     // length: exact ... items
@@ -33,6 +35,17 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
     }
 
     if (value !== undefined) {
+      if (allowNull && value === null) {
+        return { value };
+      }
+
+      if (!allowNull && value === null) {
+        return this._validateError(ArraySchemaType.validationErrorCodes.NULL_NOT_ALLOWED, {
+          value,
+          path,
+        });
+      }
+
       if (!Array.isArray(value)) {
         return this._validateError(ArraySchemaType.validationErrorCodes.NOT_OF_TYPE, {
           value,
