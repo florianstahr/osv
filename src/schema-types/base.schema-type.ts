@@ -15,7 +15,7 @@ class ValidationError extends Error {
   public path: string | undefined;
 
   public constructor({ code, value = undefined, path }: ValidationErrorArgs) {
-    super(`There was an error while validating: ${code}`);
+    super(`There was an error while validating: ${code} [${path ? path.join('.') : ''}]`);
     this.code = code;
     this.value = value;
     this.path = path ? path.join('.') : undefined;
