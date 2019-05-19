@@ -563,6 +563,25 @@ describe('ObjectSchema', () => {
           .should.be.fulfilled);
       });
     });
+
+    // Type - ObjectSchema
+    // -------------------------------------------------------------------------
+    describe('ObjectSchema', () => {
+      const getObjectSchemaObjectSchema = (
+        opts: StringSchemaTypeOptions = {},
+      ): ObjectSchema<string> => new ObjectSchema<string>(
+        new ObjectSchema<string>(new ObjectSchema.Types.String(opts)),
+      );
+
+      it('should succeed', () => getObjectSchemaObjectSchema({
+        required: true,
+        empty: false,
+      })
+        .validate('foo').exec()
+        .then((data) => {
+          expect(data).to.equal('foo');
+        }).should.be.fulfilled);
+    });
   });
 
   describe('Schema & all Types', () => {

@@ -5,7 +5,7 @@ import BaseSchemaType, {
 } from './schema-types/base.schema-type';
 import SchemaTypes from './schema-types';
 
-export type Validator<Data> = BaseSchemaType<Data>;
+export type Validator<Data> = BaseSchemaType<Data> | ObjectSchema<Data>;
 
 export interface SchemaDefinitionObject<Data> {
   [path: string]: SchemaDefinitionObject<Data> | Validator<Data>;
@@ -63,7 +63,8 @@ class ObjectSchema<Data> {
     });
   };
 
-  public isValidValidator = (validator: any): boolean => validator instanceof SchemaTypes.Base;
+  public isValidValidator = (validator: any): boolean => validator instanceof SchemaTypes.Base
+    || validator instanceof ObjectSchema;
 
   public getParsedTree = (): SchemaDefinition<Data> => this._parsedTree;
 
@@ -108,6 +109,14 @@ class ObjectSchema<Data> {
       return schema.validate(value, data, path);
     }
 
+    if (schema instanceof ObjectSchema) {
+      const validationResult = schema.validate(value);
+      return {
+        value: validationResult.value,
+        error: validationResult.error,
+      };
+    }
+
     if (typeof schema === 'object') {
       const validated: { [key: string]: any } = {};
 
@@ -137,7 +146,8 @@ class ObjectSchema<Data> {
   protected _makeValidationResult = (
     result: InternalValidationResult<Data>,
   ): ValidationResult<Data> => ({
-    ...result,
+    error: result.error,
+    value: result.value,
     exec: (): Promise<Data> => (result.error
       ? Promise.reject(result.error) : Promise.resolve<Data>(result.value as Data)),
   });

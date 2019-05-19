@@ -32,7 +32,9 @@ export interface InternalValidationResult<Data = any> {
   value?: Data;
 }
 
-export interface ValidationResult<Data> extends InternalValidationResult<Data> {
+export interface ValidationResult<Data> {
+  error: ValidationError | undefined;
+  value: Data | undefined;
   exec: () => Promise<Data>;
 }
 
