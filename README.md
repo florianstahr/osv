@@ -185,6 +185,7 @@ Everything from `BaseSchemaType` and ...
 | Option Path | Info | Type | Default |
 | --- | :---: | :---: | ---: |
 | **`item`** | array item object schema | `ObjectSchema` | |
+| `allowNull?` | allow `null` as a valid value | `boolean` | |
 | `min?` | at least ... items | `number` | |
 | `max?` | ... items at maximum | `number` | |
 | `length?` | exact ... items | `number` | |
@@ -193,7 +194,11 @@ Everything from `BaseSchemaType` and ...
 
 #### Options
 
-Everything from `BaseSchemaType`.
+Everything from `BaseSchemaType` and ...
+
+| Option Path | Info | Type | Default |
+| --- | :---: | :---: | ---: |
+| `allowNull?` | allow `null` as a valid value | `boolean` | 
 
 ### NumberSchemaType - `ObjectSchema.Types.Number`
 
@@ -203,6 +208,7 @@ Everything from `BaseSchemaType` and ...
 
 | Option Path | Info | Type | Default |
 | --- | :---: | :---: | ---: |
+| `allowNull?` | allow `null` as a valid value | `boolean` | |
 | `min?` | value has to be ... at least | `number` | |
 | `max?` | value has to be ... at maximum | `number` | |
 | `greater?` | value has to be greater than ... | `number` | |
@@ -219,6 +225,7 @@ Everything from `BaseSchemaType` and ...
 
 | Option Path | Info | Type | Default |
 | --- | :---: | :---: | ---: |
+| `allowNull?` | allow `null` as a valid value | `boolean` | |
 | `empty?` | value is allowed to have a length of 0 | `boolean` | `true` |
 | `oneOf?` | value is allowed to be one of values | `string[]` | |
 | `regex?` | value has to match regex | `RegExp` | |

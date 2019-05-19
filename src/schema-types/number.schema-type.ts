@@ -6,6 +6,7 @@ class NumberSchemaType<Data> extends BaseSchemaType<Data, NumberSchemaTypeOption
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'number/required-but-missing',
     NOT_OF_TYPE: 'number/not-of-type',
+    NULL_NOT_ALLOWED: 'array/null-not-allowed',
     MIN: 'number/min',
     MAX: 'number/max',
     GREATER: 'number/greater',
@@ -23,9 +24,10 @@ class NumberSchemaType<Data> extends BaseSchemaType<Data, NumberSchemaTypeOption
     value: any, data: DeepPartial<Data>, path: string[],
   ): InternalValidationResult<any> => {
     const {
-      min, max, greater, less, integer, positive, negative,
+      allowNull, min, max, greater, less, integer, positive, negative,
     } = this._options;
 
+    // allowNull: allow value to be null
     // min: has to be ... at least
     // max: has to be ... at maximum
     // greater: has to be greater than ...
@@ -41,7 +43,18 @@ class NumberSchemaType<Data> extends BaseSchemaType<Data, NumberSchemaTypeOption
       });
     }
 
-    if ((value !== undefined && !Number.isNaN(value)) || value) {
+    if (value !== undefined) {
+      if (allowNull && value === null) {
+        return { value };
+      }
+
+      if (!allowNull && value === null) {
+        return this._validateError(NumberSchemaType.validationErrorCodes.NULL_NOT_ALLOWED, {
+          value,
+          path,
+        });
+      }
+
       if (Number.isNaN(value)) {
         return this._validateError(NumberSchemaType.validationErrorCodes.NOT_OF_TYPE, {
           value,

@@ -17,14 +17,18 @@ export interface BaseSchemaTypeOptions {
 
 export interface ArraySchemaTypeOptions<Data = any> extends BaseSchemaTypeOptions {
   item: ObjectSchema<Data>;
+  allowNull?: boolean;
   min?: number;
   max?: number;
   length?: number;
 }
 
-export type BooleanSchemaTypeOptions = BaseSchemaTypeOptions;
+export interface BooleanSchemaTypeOptions extends BaseSchemaTypeOptions {
+  allowNull?: boolean;
+}
 
 export interface NumberSchemaTypeOptions extends BaseSchemaTypeOptions {
+  allowNull?: boolean;
   min?: number;
   max?: number;
   greater?: number;
@@ -35,6 +39,7 @@ export interface NumberSchemaTypeOptions extends BaseSchemaTypeOptions {
 }
 
 export interface StringSchemaTypeOptions extends BaseSchemaTypeOptions {
+  allowNull?: boolean;
   empty?: boolean;
   oneOf?: string[];
   regex?: RegExp;

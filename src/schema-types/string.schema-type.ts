@@ -6,6 +6,7 @@ class StringSchemaType<Data> extends BaseSchemaType<Data, StringSchemaTypeOption
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'string/required-but-missing',
     NOT_OF_TYPE: 'string/not-of-type',
+    NULL_NOT_ALLOWED: 'array/null-not-allowed',
     NOT_EMPTY: 'string/not-empty',
     NOT_ALLOWED: 'string/not-allowed',
     REGEX_FAILED: 'string/regex-failed',
@@ -22,9 +23,10 @@ class StringSchemaType<Data> extends BaseSchemaType<Data, StringSchemaTypeOption
     value: any, data: DeepPartial<Data>, path: string[],
   ): InternalValidationResult<any> => {
     const {
-      empty = true, oneOf, regex, length, minLength, maxLength,
+      allowNull, empty = true, oneOf, regex, length, minLength, maxLength,
     } = this._options;
 
+    // allowNull: allow value to be null
     // empty: value is allowed to have a length of 0
     // oneOf: value is allowed to be one of values
     // regex: value has to match regex
@@ -39,7 +41,18 @@ class StringSchemaType<Data> extends BaseSchemaType<Data, StringSchemaTypeOption
       });
     }
 
-    if (typeof value === 'string' || value) {
+    if (value !== undefined) {
+      if (allowNull && value === null) {
+        return { value };
+      }
+
+      if (!allowNull && value === null) {
+        return this._validateError(StringSchemaType.validationErrorCodes.NULL_NOT_ALLOWED, {
+          value,
+          path,
+        });
+      }
+
       if (typeof value !== 'string') {
         return this._validateError(StringSchemaType.validationErrorCodes.NOT_OF_TYPE, {
           value,
