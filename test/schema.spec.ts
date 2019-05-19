@@ -68,6 +68,24 @@ describe('ObjectSchema', () => {
           }).message));
       });
 
+      describe('allowNull', () => {
+        it('should succeed', () => getStringObjectSchema({
+          allowNull: true,
+        })
+          .validate(null).exec()
+          .then((data) => {
+            expect(data).to.eql(null);
+          }).should.be.fulfilled);
+
+        it('should fail', () => getStringObjectSchema({
+          allowNull: false,
+        })
+          .validate(null).exec()
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.String.validationErrorCodes.NULL_NOT_ALLOWED,
+          }).message));
+      });
+
       describe('oneOf', () => {
         it('should succeed', () => getStringObjectSchema({
           oneOf: ['foo', 'bar'],
@@ -200,6 +218,24 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.REQUIRED_BUT_MISSING,
+          }).message));
+      });
+
+      describe('allowNull', () => {
+        it('should succeed', () => getNumberObjectSchema({
+          allowNull: true,
+        })
+          .validate(null).exec()
+          .then((data) => {
+            expect(data).to.eql(null);
+          }).should.be.fulfilled);
+
+        it('should fail', () => getNumberObjectSchema({
+          allowNull: false,
+        })
+          .validate(null).exec()
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Number.validationErrorCodes.NULL_NOT_ALLOWED,
           }).message));
       });
 
@@ -354,6 +390,24 @@ describe('ObjectSchema', () => {
             code: ObjectSchema.Types.Boolean.validationErrorCodes.REQUIRED_BUT_MISSING,
           }).message));
       });
+
+      describe('allowNull', () => {
+        it('should succeed', () => getBooleanObjectSchema({
+          allowNull: true,
+        })
+          .validate(null).exec()
+          .then((data) => {
+            expect(data).to.eql(null);
+          }).should.be.fulfilled);
+
+        it('should fail', () => getBooleanObjectSchema({
+          allowNull: false,
+        })
+          .validate(null).exec()
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Boolean.validationErrorCodes.NULL_NOT_ALLOWED,
+          }).message));
+      });
     });
 
     // Type - Array
@@ -381,6 +435,24 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.REQUIRED_BUT_MISSING,
+          }).message));
+      });
+
+      describe('allowNull', () => {
+        it('should succeed', () => getArrayObjectSchema({
+          allowNull: true,
+        })
+          .validate(null).exec()
+          .then((data) => {
+            expect(data).to.eql(null);
+          }).should.be.fulfilled);
+
+        it('should fail', () => getArrayObjectSchema({
+          allowNull: false,
+        })
+          .validate(null).exec()
+          .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+            code: ObjectSchema.Types.Array.validationErrorCodes.NULL_NOT_ALLOWED,
           }).message));
       });
 
