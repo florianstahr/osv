@@ -113,7 +113,14 @@ class ObjectSchema<Data> {
       const validationResult = schema.validate(value);
       return {
         value: validationResult.value,
-        error: validationResult.error,
+        error: validationResult.error ? new ValidationError({
+          code: validationResult.error.code,
+          value: validationResult.error.value,
+          path: typeof validationResult.error.path === 'string' && validationResult.error.path.length ? [
+            ...path,
+            ...validationResult.error.path.split('.'),
+          ] : undefined,
+        }) : undefined,
       };
     }
 
