@@ -134,7 +134,9 @@ class ObjectSchema<Data> {
           return result;
         }
 
-        validated[keys[i]] = result.value;
+        if (result.value !== undefined) {
+          validated[keys[i]] = result.value;
+        }
       }
 
       return { value: validated };
