@@ -124,7 +124,7 @@ class ObjectSchema<Data> {
 
       for (let i = 0; i < keys.length; i += 1) {
         const result = this._validate({
-          value: value && value[keys[i]] ? value[keys[i]] : undefined,
+          value: typeof value === 'object' && value[keys[i]] !== undefined ? value[keys[i]] : undefined,
           data,
           schema: schema[keys[i]],
           path: [...path, keys[i]],

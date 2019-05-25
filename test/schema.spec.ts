@@ -77,6 +77,16 @@ describe('ObjectSchema', () => {
             expect(data).to.eql(null);
           }).should.be.fulfilled);
 
+        it('should succeed#return-with-null-object', () => new ObjectSchema<{foo: string}>({
+          foo: new ObjectSchema.Types.String({
+            allowNull: true,
+          }),
+        })
+          .validate({ foo: null }).exec()
+          .then((data) => {
+            expect(data).to.eql({ foo: null });
+          }).should.be.fulfilled);
+
         it('should fail', () => getStringObjectSchema({
           allowNull: false,
         })
