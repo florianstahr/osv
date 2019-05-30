@@ -66,6 +66,10 @@ class ObjectSchema<Data> {
   public isValidValidator = (validator: any): boolean => validator instanceof SchemaTypes.Base
     || validator instanceof ObjectSchema;
 
+  public isObjectSchema = (
+    value: any,
+  ): value is ObjectSchema<Data> => value instanceof ObjectSchema;
+
   public getParsedTree = (): SchemaDefinition<Data> => this._parsedTree;
 
   protected _parseSchemaDefinition = (
@@ -109,8 +113,8 @@ class ObjectSchema<Data> {
       return schema.validate(value, data, path);
     }
 
-    if (schema instanceof ObjectSchema) {
-      const validationResult = schema.validate(value);
+    if (this.isObjectSchema(schema)) {
+      const validationResult = (schema as ObjectSchema<Data>).validate(value);
       return {
         value: validationResult.value,
         error: validationResult.error ? new ValidationError({
