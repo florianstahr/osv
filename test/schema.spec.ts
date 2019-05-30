@@ -632,5 +632,53 @@ describe('ObjectSchema', () => {
       }).exec()
         .should.to.be.fulfilled;
     });
+
+    it('should succeed#nested-object-schema', async () => {
+      interface PersonInfo {
+        person: {
+          firstName?: string;
+          lastName?: string;
+        };
+      }
+
+      interface Person {
+        id: string;
+        username: string;
+        email: string;
+        info: PersonInfo;
+        followers: string[];
+      }
+
+      const personInfoSchema = new ObjectSchema<PersonInfo>({
+        person: {
+          firstName: new ObjectSchema.Types.String({ }),
+          lastName: new ObjectSchema.Types.String({ }),
+        },
+      });
+
+      const personSchema = new ObjectSchema<Person>({
+        id: new ObjectSchema.Types.String({ required: true }),
+        username: new ObjectSchema.Types.String({ required: true }),
+        email: new ObjectSchema.Types.String({ required: true }),
+        info: personInfoSchema as any,
+        followers: new ObjectSchema.Types.Array({
+          item: new ObjectSchema(new ObjectSchema.Types.String({ required: true })),
+        }),
+      });
+
+      return personSchema.validate({
+        id: '123456',
+        username: 'foo',
+        email: 'foo@bar.com',
+        info: {
+          person: {
+            firstName: 'Paul',
+            lastName: 'Smith',
+          },
+        },
+        followers: ['222222'],
+      }).exec()
+        .should.to.be.fulfilled;
+    });
   });
 });
