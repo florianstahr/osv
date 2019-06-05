@@ -59,6 +59,7 @@ class ObjectSchema<Data> {
     return this._makeValidationResult({
       error: new ValidationError({
         code: ObjectSchema.validationErrorCodes.UNKNOWN,
+        path: [],
       }),
     });
   };
@@ -120,10 +121,10 @@ class ObjectSchema<Data> {
         error: validationResult.error ? new ValidationError({
           code: validationResult.error.code,
           value: validationResult.error.value,
-          path: typeof validationResult.error.path === 'string' && validationResult.error.path.length ? [
+          path: validationResult.error.path.length ? [
             ...path,
             ...validationResult.error.path.split('.'),
-          ] : undefined,
+          ] : path,
         }) : undefined,
       };
     }

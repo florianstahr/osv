@@ -4,7 +4,7 @@ import { DeepPartial } from '../helpers.types';
 export interface ValidationErrorArgs {
   code: string;
   value?: any;
-  path?: string[];
+  path: string[];
 }
 
 class ValidationError extends Error {
@@ -12,13 +12,13 @@ class ValidationError extends Error {
 
   public value: any;
 
-  public path: string | undefined;
+  public path: string;
 
   public constructor({ code, value = undefined, path }: ValidationErrorArgs) {
-    super(`There was an error while validating: ${code} [${path ? path.join('.') : ''}]`);
+    super(`There was an error while validating: ${code} [${path.join('.')}]`);
     this.code = code;
     this.value = value;
-    this.path = path ? path.join('.') : undefined;
+    this.path = path.join('.');
   }
 }
 
