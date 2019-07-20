@@ -65,6 +65,7 @@ describe('ObjectSchema', () => {
           .validate(undefined).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.REQUIRED_BUT_MISSING,
+            path: [],
           }).message));
       });
 
@@ -93,6 +94,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.NULL_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -111,6 +113,7 @@ describe('ObjectSchema', () => {
           .validate('bar').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -129,6 +132,7 @@ describe('ObjectSchema', () => {
           .validate('').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.NOT_EMPTY,
+            path: [],
           }).message));
       });
 
@@ -147,6 +151,7 @@ describe('ObjectSchema', () => {
           .validate('barfoo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.REGEX_FAILED,
+            path: [],
           }).message));
       });
 
@@ -165,6 +170,7 @@ describe('ObjectSchema', () => {
           .validate('foobar').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.LENGTH_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -183,6 +189,7 @@ describe('ObjectSchema', () => {
           .validate('foo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.TOO_SHORT,
+            path: [],
           }).message));
       });
 
@@ -201,6 +208,7 @@ describe('ObjectSchema', () => {
           .validate('foo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.TOO_LONG,
+            path: [],
           }).message));
       });
     });
@@ -228,6 +236,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.REQUIRED_BUT_MISSING,
+            path: [],
           }).message));
       });
 
@@ -246,6 +255,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.NULL_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -264,6 +274,7 @@ describe('ObjectSchema', () => {
           .validate(5).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.MIN,
+            path: [],
           }).message));
       });
 
@@ -282,6 +293,7 @@ describe('ObjectSchema', () => {
           .validate(7).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.MAX,
+            path: [],
           }).message));
       });
 
@@ -300,6 +312,7 @@ describe('ObjectSchema', () => {
           .validate(6).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.GREATER,
+            path: [],
           }).message));
       });
 
@@ -318,6 +331,7 @@ describe('ObjectSchema', () => {
           .validate(6).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.LESS,
+            path: [],
           }).message));
       });
 
@@ -336,6 +350,7 @@ describe('ObjectSchema', () => {
           .validate(6.1).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.INTEGER,
+            path: [],
           }).message));
       });
 
@@ -354,6 +369,7 @@ describe('ObjectSchema', () => {
           .validate(0).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.POSITIVE,
+            path: [],
           }).message));
       });
 
@@ -372,6 +388,7 @@ describe('ObjectSchema', () => {
           .validate(0).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.NEGATIVE,
+            path: [],
           }).message));
       });
     });
@@ -398,6 +415,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Boolean.validationErrorCodes.REQUIRED_BUT_MISSING,
+            path: [],
           }).message));
       });
 
@@ -416,6 +434,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Boolean.validationErrorCodes.NULL_NOT_ALLOWED,
+            path: [],
           }).message));
       });
     });
@@ -445,6 +464,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.REQUIRED_BUT_MISSING,
+            path: [],
           }).message));
       });
 
@@ -463,6 +483,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.NULL_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -481,6 +502,7 @@ describe('ObjectSchema', () => {
           .validate(['foo']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.MIN,
+            path: [],
           }).message));
       });
 
@@ -499,6 +521,7 @@ describe('ObjectSchema', () => {
           .validate(['foo', 'bar']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.MAX,
+            path: [],
           }).message));
       });
 
@@ -517,6 +540,7 @@ describe('ObjectSchema', () => {
           .validate(['foo']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.LENGTH_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
