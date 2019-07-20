@@ -7,6 +7,7 @@ import {
   BooleanSchemaTypeOptions,
   NumberSchemaTypeOptions,
   StringSchemaTypeOptions, ValidationError,
+  SchemaDefinition,
 } from '../src';
 
 chai.use(chaiAsPromised);
@@ -65,6 +66,7 @@ describe('ObjectSchema', () => {
           .validate(undefined).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.REQUIRED_BUT_MISSING,
+            path: [],
           }).message));
       });
 
@@ -93,6 +95,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.NULL_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -111,6 +114,7 @@ describe('ObjectSchema', () => {
           .validate('bar').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -129,6 +133,7 @@ describe('ObjectSchema', () => {
           .validate('').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.NOT_EMPTY,
+            path: [],
           }).message));
       });
 
@@ -147,6 +152,7 @@ describe('ObjectSchema', () => {
           .validate('barfoo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.REGEX_FAILED,
+            path: [],
           }).message));
       });
 
@@ -165,6 +171,7 @@ describe('ObjectSchema', () => {
           .validate('foobar').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.LENGTH_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -183,6 +190,7 @@ describe('ObjectSchema', () => {
           .validate('foo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.TOO_SHORT,
+            path: [],
           }).message));
       });
 
@@ -201,6 +209,7 @@ describe('ObjectSchema', () => {
           .validate('foo').exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.String.validationErrorCodes.TOO_LONG,
+            path: [],
           }).message));
       });
     });
@@ -228,6 +237,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.REQUIRED_BUT_MISSING,
+            path: [],
           }).message));
       });
 
@@ -246,6 +256,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.NULL_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -264,6 +275,7 @@ describe('ObjectSchema', () => {
           .validate(5).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.MIN,
+            path: [],
           }).message));
       });
 
@@ -282,6 +294,7 @@ describe('ObjectSchema', () => {
           .validate(7).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.MAX,
+            path: [],
           }).message));
       });
 
@@ -300,6 +313,7 @@ describe('ObjectSchema', () => {
           .validate(6).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.GREATER,
+            path: [],
           }).message));
       });
 
@@ -318,6 +332,7 @@ describe('ObjectSchema', () => {
           .validate(6).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.LESS,
+            path: [],
           }).message));
       });
 
@@ -336,6 +351,7 @@ describe('ObjectSchema', () => {
           .validate(6.1).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.INTEGER,
+            path: [],
           }).message));
       });
 
@@ -354,6 +370,7 @@ describe('ObjectSchema', () => {
           .validate(0).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.POSITIVE,
+            path: [],
           }).message));
       });
 
@@ -372,6 +389,7 @@ describe('ObjectSchema', () => {
           .validate(0).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Number.validationErrorCodes.NEGATIVE,
+            path: [],
           }).message));
       });
     });
@@ -398,6 +416,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Boolean.validationErrorCodes.REQUIRED_BUT_MISSING,
+            path: [],
           }).message));
       });
 
@@ -416,6 +435,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Boolean.validationErrorCodes.NULL_NOT_ALLOWED,
+            path: [],
           }).message));
       });
     });
@@ -445,6 +465,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.REQUIRED_BUT_MISSING,
+            path: [],
           }).message));
       });
 
@@ -463,6 +484,7 @@ describe('ObjectSchema', () => {
           .validate(null).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.NULL_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -481,6 +503,7 @@ describe('ObjectSchema', () => {
           .validate(['foo']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.MIN,
+            path: [],
           }).message));
       });
 
@@ -499,6 +522,7 @@ describe('ObjectSchema', () => {
           .validate(['foo', 'bar']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.MAX,
+            path: [],
           }).message));
       });
 
@@ -517,6 +541,7 @@ describe('ObjectSchema', () => {
           .validate(['foo']).exec()
           .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
             code: ObjectSchema.Types.Array.validationErrorCodes.LENGTH_NOT_ALLOWED,
+            path: [],
           }).message));
       });
 
@@ -679,6 +704,145 @@ describe('ObjectSchema', () => {
         followers: ['222222'],
       }).exec()
         .should.to.be.fulfilled;
+    });
+  });
+
+  describe('omit checking on specific paths', () => {
+    interface TestSchemaInfo {
+      person: {
+        firstName?: string;
+        lastName?: string;
+      };
+    }
+
+    interface TestSchema {
+      id: string;
+      username: string;
+      email: string;
+      info: TestSchemaInfo;
+      followers: {
+        id: string;
+      }[];
+    }
+
+    const testSchema = new ObjectSchema<TestSchema>({
+      id: new ObjectSchema.Types.String({ required: true }),
+      username: new ObjectSchema.Types.String({ required: true }),
+      email: new ObjectSchema.Types.String({ required: true }),
+      info: new ObjectSchema<TestSchemaInfo>({
+        person: {
+          firstName: new ObjectSchema.Types.String({ required: true }),
+          lastName: new ObjectSchema.Types.String({ required: true }),
+        },
+      }) as unknown as SchemaDefinition<TestSchema>,
+      followers: new ObjectSchema.Types.Array({
+        item: new ObjectSchema({
+          id: new ObjectSchema.Types.String({ required: true }),
+        }),
+      }),
+    });
+
+    describe('single lvl', () => {
+      it('should succeed#whitelist', () => testSchema.validate({
+        id: undefined,
+        username: 'foo',
+        email: 'foo@bar.com',
+        info: {
+          person: {
+            firstName: 'James',
+            lastName: 'Smith',
+          },
+        },
+        followers: [{
+          id: '222222',
+        }],
+      }, {
+        check: {
+          whitelist: ['username', 'email', 'info', 'followers'],
+        },
+      }).exec().should.be.fulfilled);
+
+      it('should succeed#blacklist', () => testSchema.validate({
+        id: undefined,
+        username: 'foo',
+        email: 'foo@bar.com',
+        info: {
+          person: {
+            firstName: 'James',
+            lastName: 'Smith',
+          },
+        },
+        followers: [{
+          id: '222222',
+        }],
+      }, {
+        check: {
+          blacklist: ['id'],
+        },
+      }).exec().should.be.fulfilled);
+    });
+
+    describe('multi lvl & nested schemes', () => {
+      it('should succeed#whitelist', () => testSchema.validate({
+        id: undefined,
+        username: 'foo',
+        email: 'foo@bar.com',
+        info: {
+          person: {
+            firstName: 'James',
+            lastName: undefined,
+          },
+        },
+        followers: [{
+          id: '222222',
+        }],
+      }, {
+        check: {
+          whitelist: ['username', 'email', 'followers', 'info.person.firstName'],
+        },
+      }).exec().should.be.fulfilled);
+
+      it('should fail#whitelist', () => testSchema.validate({
+        id: undefined,
+        username: 'foo',
+        email: 'foo@bar.com',
+        info: {
+          person: {
+            firstName: 'James',
+            lastName: 'Smith',
+          },
+        },
+        followers: [{
+          id: undefined,
+        }],
+      }, {
+        check: {
+          whitelist: ['username', 'email', 'info', 'followers'],
+        },
+      }).exec()
+        .should.be.rejectedWith(new ObjectSchema.Types.Base.ValidationError({
+          code: ObjectSchema.Types.String.validationErrorCodes.REQUIRED_BUT_MISSING,
+          path: ['followers', '0', 'id'],
+        }).message));
+
+      it('should succeed#blacklist-and-array', () => testSchema.validate({
+        id: '123456',
+        username: 'foo',
+        email: 'foo@bar.com',
+        info: {
+          person: {
+            firstName: 'James',
+            lastName: 'Smith',
+          },
+        },
+        followers: [{
+          id: undefined,
+        }],
+      }, {
+        check: {
+          blacklist: ['followers.id'],
+        },
+      }).exec().should.be.fulfilled);
     });
   });
 });

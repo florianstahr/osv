@@ -49,10 +49,12 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
 
   public validate = (
     value: any, data: DeepPartial<Data>, path: string[],
+    check: { whitelist?: string[]; blacklist?: string[] },
   ): InternalValidationResult<Data> => {
     const val = this._preValidate(value, data);
 
-    const result: InternalValidationResult<Data> = this._validateWithOptions(val, data, path);
+    const result: InternalValidationResult<Data> = this
+      ._validateWithOptions(val, data, path, check);
 
     if (result.error) {
       return result;
@@ -77,6 +79,7 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
 
   protected _validateWithOptions = (
     value: any, data: DeepPartial<Data>, path: string[],
+    check: { whitelist?: string[]; blacklist?: string[] },
   ): InternalValidationResult<any> => ({ value });
 
   protected _postValidate = (value: any, data: DeepPartial<Data>) => {
