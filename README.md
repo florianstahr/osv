@@ -104,7 +104,9 @@ interface User {
   id: string;
   username: string;
   role: 'owner' | 'admin' | 'subscriber';
-  followers: string[];
+  followers: {
+    id: string;
+  }[];
 }
 
 const definition: SchemaDefinition<User> = {
@@ -117,7 +119,9 @@ const definition: SchemaDefinition<User> = {
     oneOf: ['owner', 'admin', 'subscriber'],
   }),
   followers: new Array({
-    item: new ObjectSchema(new String({ required: true, empty: false })),
+    item: new ObjectSchema({
+      id: new String({ required: true, empty: false }),
+    }),
   }),
 };
 
@@ -139,7 +143,9 @@ type ValidationResult<Data> = {
 const user1 = {
   username: 'tomato',
   role: 'owner',
-  followers: ['apple'],
+  followers: [{
+    id: 'apple',
+  }],
 };
 
 schema.validate(user1).exec()
@@ -151,7 +157,9 @@ schema.validate(user1).exec()
 const user2 = {
   username: 'tomato',
   role: 'author',
-  followers: ['apple'],
+  followers: [{
+    id: 'apple',
+  }],
 };
 
 schema.validate(user1).exec()
@@ -161,6 +169,34 @@ schema.validate(user1).exec()
     // e.code: 'string/not-allowed'
     // e.path: 'role'
     // value: 'author'
+  });
+```
+
+You can also omit specific paths during checking. These are just transfered onto the result value the way they are on the initial value. A whitelist and a blacklist are both optional.
+
+```typescript
+interface ObjectSchemaValidationOptions {
+  check?: {
+    whitelist?: string[]; // all paths that should be checked,
+    blacklist?: string[]; // all paths that shouldn't be checked
+  };
+}
+
+schema.validate({
+  username: 'tomato',
+  role: 'owner',
+  followers: [{
+    id: undefined,
+  }],
+}, {
+  check: {
+    blacklist: ['followers.id'],
+  }
+}).exec() // succeeds
+  .then((user) => {
+    // use validated user
+    const username = user.username;
+    const firstFollowerId = user.followers[0].id; // -> undefined
   });
 ```
 

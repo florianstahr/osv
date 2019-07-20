@@ -5,6 +5,13 @@ import BaseSchemaType, {
 } from './schema-types/base.schema-type';
 import SchemaTypes from './schema-types';
 
+export interface ObjectSchemaValidationOptions {
+  check?: {
+    whitelist?: string[];
+    blacklist?: string[];
+  };
+}
+
 export type Validator<Data> = BaseSchemaType<Data> | ObjectSchema<Data>;
 
 export interface SchemaDefinitionObject<Data> {
@@ -23,7 +30,78 @@ export interface SchemaValidateArgs<Data> {
   data: any;
   schema: SchemaDefinition<Data> | Validator<Data>;
   path: string[];
+  check: {
+    whitelist: string[];
+    blacklist: string[];
+  };
 }
+
+const prepareSchemaWhiteAndBlacklistPaths = (
+  paths: string[], currentPath: string,
+): string[] => {
+  const regex = new RegExp(`^${currentPath}`);
+  return paths.map((path) => {
+    if (!!path && regex.test(path)) {
+      return path.replace(regex, '').replace(/^\./, '');
+    }
+    return '';
+  }).filter(path => !!path);
+};
+
+const checkWhitelistAndBlacklist = (check: {
+  whitelist: string[]; // nur die
+  blacklist: string[]; // alles, aber nicht die
+}, path: string): {
+  check: boolean;
+  next: {
+    whitelist: string[];
+    blacklist: string[];
+  };
+} => {
+  const result: {
+    check: boolean;
+    next: {
+      whitelist: string[];
+      blacklist: string[];
+    };
+  } = {
+    check: true,
+    next: {
+      whitelist: [],
+      blacklist: [],
+    },
+  };
+
+  const pathRegex = new RegExp(`^${path}`);
+
+  if (check.whitelist.length) {
+    let isOnWhitelist = false;
+    check.whitelist.forEach((keepPath) => {
+      if (!isOnWhitelist && pathRegex.test(keepPath)) {
+        isOnWhitelist = true;
+        if (keepPath !== path) {
+          result.next.whitelist.push(keepPath);
+        }
+      }
+    });
+
+    if (!isOnWhitelist) {
+      result.check = false;
+    }
+  } else if (check.blacklist.length) {
+    check.blacklist.forEach((omitPath) => {
+      if (result.check && pathRegex.test(omitPath)) {
+        if (omitPath !== path) {
+          result.next.blacklist.push(omitPath);
+        } else {
+          result.check = false;
+        }
+      }
+    });
+  }
+
+  return result;
+};
 
 class ObjectSchema<Data> {
   protected _original: SchemaDefinition<Data>;
@@ -44,12 +122,20 @@ class ObjectSchema<Data> {
     this._parsedTree = this._parseSchemaDefinition(definition);
   }
 
-  public validate = (value: any): ValidationResult<Data> => {
+  public validate = (
+    value: any, options: ObjectSchemaValidationOptions = {},
+  ): ValidationResult<Data> => {
     const result = this._validate({
       value,
       data: value,
       schema: this._parsedTree,
       path: [],
+      check: {
+        whitelist: (options.check && options.check.whitelist
+          && prepareSchemaWhiteAndBlacklistPaths(options.check.whitelist, '')) || [],
+        blacklist: (options.check && options.check.blacklist
+          && prepareSchemaWhiteAndBlacklistPaths(options.check.blacklist, '')) || [],
+      },
     });
 
     if (result !== null) {
@@ -64,19 +150,17 @@ class ObjectSchema<Data> {
     });
   };
 
-  public isValidValidator = (validator: any): boolean => validator instanceof SchemaTypes.Base
-    || validator instanceof ObjectSchema;
+  public static isValidValidator = (validator: any): boolean => validator
+    instanceof SchemaTypes.Base || validator instanceof ObjectSchema;
 
-  public isObjectSchema = (
+  public static isObjectSchema = <Data extends any>(
     value: any,
   ): value is ObjectSchema<Data> => value instanceof ObjectSchema;
-
-  public getParsedTree = (): SchemaDefinition<Data> => this._parsedTree;
 
   protected _parseSchemaDefinition = (
     schema: SchemaDefinition<Data>, path: string[] = [],
   ): SchemaDefinition<Data> => {
-    if (this.isValidValidator(schema)) {
+    if (ObjectSchema.isValidValidator(schema)) {
       this._paths.push({
         path: path.join('.'),
         validator: schema as Validator<Data>,
@@ -94,7 +178,7 @@ class ObjectSchema<Data> {
 
         if (
           (typeof nestedParsed === 'object' && Object.keys(nestedParsed).length)
-          || this.isValidValidator(nestedParsed)
+          || ObjectSchema.isValidValidator(nestedParsed)
         ) {
           parsed[schemaKey] = nestedParsed;
         }
@@ -107,15 +191,23 @@ class ObjectSchema<Data> {
 
   protected _validate = (
     {
-      value, data, schema, path,
+      value, data, schema, path, check,
     }: SchemaValidateArgs<Data>,
   ): InternalValidationResult<any> | null => {
     if (schema instanceof BaseSchemaType) {
-      return schema.validate(value, data, path);
+      return schema.validate(value, data, path, {
+        whitelist: prepareSchemaWhiteAndBlacklistPaths(check.whitelist, path.join('.')),
+        blacklist: prepareSchemaWhiteAndBlacklistPaths(check.blacklist, path.join('.')),
+      });
     }
 
-    if (this.isObjectSchema(schema)) {
-      const validationResult = (schema as ObjectSchema<Data>).validate(value);
+    if (ObjectSchema.isObjectSchema<Data>(schema)) {
+      const validationResult = (schema as ObjectSchema<Data>).validate(value, {
+        check: {
+          whitelist: prepareSchemaWhiteAndBlacklistPaths(check.whitelist, path.join('.')),
+          blacklist: prepareSchemaWhiteAndBlacklistPaths(check.blacklist, path.join('.')),
+        },
+      });
       return {
         value: validationResult.value,
         error: validationResult.error ? new ValidationError({
@@ -135,19 +227,27 @@ class ObjectSchema<Data> {
       const keys = Object.keys(schema);
 
       for (let i = 0; i < keys.length; i += 1) {
-        const result = this._validate({
-          value: typeof value === 'object' && value[keys[i]] !== undefined ? value[keys[i]] : undefined,
-          data,
-          schema: schema[keys[i]],
-          path: [...path, keys[i]],
-        });
+        const nextPath = [...path, keys[i]];
+        const checkWhitelistAndBlacklistResult = checkWhitelistAndBlacklist(check, nextPath.join('.'));
 
-        if (result === null || (result && result.error)) {
-          return result;
-        }
+        if (checkWhitelistAndBlacklistResult.check) {
+          const result = this._validate({
+            value: typeof value === 'object' && value[keys[i]] !== undefined ? value[keys[i]] : undefined,
+            data,
+            schema: schema[keys[i]],
+            path: [...path, keys[i]],
+            check: checkWhitelistAndBlacklistResult.next,
+          });
 
-        if (result.value !== undefined) {
-          validated[keys[i]] = result.value;
+          if (result === null || (result && result.error)) {
+            return result;
+          }
+
+          if (result.value !== undefined) {
+            validated[keys[i]] = result.value;
+          }
+        } else if (value[keys[i]] !== undefined) {
+          validated[keys[i]] = value[keys[i]];
         }
       }
 
