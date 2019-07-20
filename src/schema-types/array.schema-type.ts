@@ -16,6 +16,7 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
 
   protected _validateWithOptions = (
     value: any, data: DeepPartial<Data>, path: string[],
+    check: { whitelist?: string[]; blacklist?: string[] },
   ): InternalValidationResult<any> => {
     const {
       allowNull, min, max, length, item,
@@ -81,7 +82,7 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
         });
       }
 
-      return this._validateArrayItems(value, path);
+      return this._validateArrayItems(value, path, check);
     }
 
     return { value };
@@ -89,12 +90,15 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
 
   protected _validateArrayItems = (
     arrayItems: any[], path: string[],
+    check: { whitelist?: string[]; blacklist?: string[] },
   ): InternalValidationResult<any> => {
     const { item } = this._options;
     const results: any[] = [];
 
     for (let i = 0; i < arrayItems.length; i += 1) {
-      const validatedItem: InternalValidationResult<any> = item.validate(arrayItems[i]);
+      const validatedItem: InternalValidationResult<any> = item.validate(arrayItems[i], {
+        check,
+      });
 
       if (validatedItem.error) {
         return this._validateError(validatedItem.error.code, {
