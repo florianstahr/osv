@@ -150,19 +150,17 @@ class ObjectSchema<Data> {
     });
   };
 
-  public isValidValidator = (validator: any): boolean => validator instanceof SchemaTypes.Base
-    || validator instanceof ObjectSchema;
+  public static isValidValidator = (validator: any): boolean => validator
+    instanceof SchemaTypes.Base || validator instanceof ObjectSchema;
 
-  public isObjectSchema = (
+  public static isObjectSchema = <Data extends any>(
     value: any,
   ): value is ObjectSchema<Data> => value instanceof ObjectSchema;
-
-  public getParsedTree = (): SchemaDefinition<Data> => this._parsedTree;
 
   protected _parseSchemaDefinition = (
     schema: SchemaDefinition<Data>, path: string[] = [],
   ): SchemaDefinition<Data> => {
-    if (this.isValidValidator(schema)) {
+    if (ObjectSchema.isValidValidator(schema)) {
       this._paths.push({
         path: path.join('.'),
         validator: schema as Validator<Data>,
@@ -180,7 +178,7 @@ class ObjectSchema<Data> {
 
         if (
           (typeof nestedParsed === 'object' && Object.keys(nestedParsed).length)
-          || this.isValidValidator(nestedParsed)
+          || ObjectSchema.isValidValidator(nestedParsed)
         ) {
           parsed[schemaKey] = nestedParsed;
         }
@@ -203,7 +201,7 @@ class ObjectSchema<Data> {
       });
     }
 
-    if (this.isObjectSchema(schema)) {
+    if (ObjectSchema.isObjectSchema<Data>(schema)) {
       const validationResult = (schema as ObjectSchema<Data>).validate(value, {
         check: {
           whitelist: prepareSchemaWhiteAndBlacklistPaths(check.whitelist, path.join('.')),
