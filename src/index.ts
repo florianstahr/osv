@@ -8,6 +8,7 @@ export {
   NumberSchemaTypeOptions,
   OptionalSchemaTypeOptions,
   StringSchemaTypeOptions,
+  UnionSchemaTypeOptions,
 
   RequiredSchemaTypeCallback,
 } from './schema-types/types';
@@ -46,5 +47,9 @@ export {
 export {
   default as StringSchemaType,
 } from './schema-types/string.schema-type';
+
+export {
+  default as UnionSchemaType,
+} from './schema-types/union.schema-type';
 
 export default ObjectSchema;
