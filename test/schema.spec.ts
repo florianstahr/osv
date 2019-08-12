@@ -599,6 +599,57 @@ describe('ObjectSchema', () => {
       });
     });
 
+    // Type - Optional
+    // -------------------------------------------------------------------------
+    describe('Optional', () => {
+      describe('allow optional', () => {
+        const schema = new ObjectSchema({
+          optional: new ObjectSchema.Types.Optional({
+            item: new ObjectSchema({
+              test: new ObjectSchema.Types.String({ required: true, empty: false }),
+            }),
+          }),
+        });
+
+        it('should succeed', () => schema.validate({})
+          .exec()
+          .then((value) => {
+            expect(value).to.eql({});
+          }).should.be.fulfilled);
+
+        it('should fail', () => schema.validate({
+          optional: null,
+        })
+          .exec()
+          .catch((e: ValidationError) => {
+            expect(e.code).to.equal(ObjectSchema.Types.Optional
+              .validationErrorCodes.NULL_NOT_ALLOWED);
+            expect(e.path).to.equal('optional');
+          }).should.be.fulfilled);
+      });
+
+      describe('allow null', () => {
+        const schema = new ObjectSchema({
+          optional: new ObjectSchema.Types.Optional({
+            item: new ObjectSchema({
+              test: new ObjectSchema.Types.String({ required: true, empty: false }),
+            }),
+            allowNull: true,
+          }),
+        });
+
+        it('should succeed', () => schema.validate({
+          optional: null,
+        })
+          .exec()
+          .then((value) => {
+            expect(value).to.eql({
+              optional: null,
+            });
+          }).should.be.fulfilled);
+      });
+    });
+
     // Type - ObjectSchema
     // -------------------------------------------------------------------------
     describe('ObjectSchema', () => {

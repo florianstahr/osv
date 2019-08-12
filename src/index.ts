@@ -6,6 +6,7 @@ export {
   BaseSchemaTypeOptions,
   BooleanSchemaTypeOptions,
   NumberSchemaTypeOptions,
+  OptionalSchemaTypeOptions,
   StringSchemaTypeOptions,
 
   RequiredSchemaTypeCallback,
@@ -37,6 +38,10 @@ export {
 export {
   default as NumberSchemaType,
 } from './schema-types/number.schema-type';
+
+export {
+  default as OptionalSchemaType,
+} from './schema-types/optional.schema-type';
 
 export {
   default as StringSchemaType,
