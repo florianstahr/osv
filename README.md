@@ -253,6 +253,17 @@ Everything from `BaseSchemaType` and ...
 | `positive?` | value has to be positive | `boolean` | |
 | `negative?` | value has to be negative | `boolean` | |
 
+### OptionalSchemaType - `ObjectSchema.Types.Optional`
+
+#### Options
+
+Everything from `BaseSchemaType` and ...
+
+| Option Path | Info | Type | Default |
+| --- | :---: | :---: | ---: |
+| **`item`** | array item object schema | `ObjectSchema` | |
+| `allowNull?` | allow `null` as a valid value | `boolean` | |
+
 ### StringSchemaType - `ObjectSchema.Types.String`
 
 #### Options
