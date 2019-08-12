@@ -38,6 +38,11 @@ export interface NumberSchemaTypeOptions extends BaseSchemaTypeOptions {
   negative?: boolean;
 }
 
+export interface OptionalSchemaTypeOptions<Data = any> extends BaseSchemaTypeOptions {
+  item: ObjectSchema<Data>;
+  allowNull?: boolean;
+}
+
 export interface StringSchemaTypeOptions extends BaseSchemaTypeOptions {
   allowNull?: boolean;
   empty?: boolean;
