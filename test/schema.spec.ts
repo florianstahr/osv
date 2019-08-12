@@ -650,6 +650,158 @@ describe('ObjectSchema', () => {
       });
     });
 
+    // Type - Union
+    // -------------------------------------------------------------------------
+    describe('Union', () => {
+      describe('union', () => {
+        const schema = new ObjectSchema({
+          union: new ObjectSchema.Types.Union({
+            required: true,
+            schemas: [
+              new ObjectSchema(new ObjectSchema.Types.String({ required: true, empty: false })),
+              new ObjectSchema({
+                test: {
+                  test1: new ObjectSchema(new ObjectSchema.Types
+                    .String({ required: true, empty: false })),
+                  test2: new ObjectSchema(new ObjectSchema.Types
+                    .String({ required: true, empty: false })),
+                },
+              }),
+            ],
+          }),
+        });
+
+        it('should succeed#required#schema-1', () => schema.validate({
+          union: 'test',
+        })
+          .exec()
+          .then((value) => {
+            expect(value).to.eql({
+              union: 'test',
+            });
+          }).should.be.fulfilled);
+
+        it('should succeed#required#schema-2', () => schema.validate({
+          union: {
+            test: {
+              test1: 'test',
+              test2: 'test',
+            },
+          },
+        })
+          .exec()
+          .then((value) => {
+            expect(value).to.eql({
+              union: {
+                test: {
+                  test1: 'test',
+                  test2: 'test',
+                },
+              },
+            });
+          }).should.be.fulfilled);
+
+        it('should fail#undefined', () => schema.validate({
+          union: undefined,
+        })
+          .exec()
+          .catch((e: ValidationError) => {
+            expect(e.code).to.equal(ObjectSchema.Types.Union
+              .validationErrorCodes.REQUIRED_BUT_MISSING);
+            expect(e.path).to.equal('union');
+          }).should.be.fulfilled);
+
+        it('should fail#all-schemas-invalid', () => schema.validate({
+          union: {
+            test: {
+              test1: true,
+              test2: 'test',
+            },
+          },
+        })
+          .exec()
+          .catch((e: ValidationError) => {
+            expect(e.code).to.equal(ObjectSchema.Types.Union
+              .validationErrorCodes.ALL_SCHEMAS_INVALID);
+            expect(e.path).to.equal('union');
+          }).should.be.fulfilled);
+      });
+
+      describe('with resolve', () => {
+        const schema = new ObjectSchema({
+          union: new ObjectSchema.Types.Union({
+            schemas: [
+              new ObjectSchema(new ObjectSchema.Types.String({ required: true, empty: false })),
+              new ObjectSchema({
+                test: {
+                  test1: new ObjectSchema(new ObjectSchema.Types
+                    .String({ required: true, empty: false })),
+                  test2: new ObjectSchema(new ObjectSchema.Types
+                    .String({ required: true, empty: false })),
+                },
+              }),
+            ],
+            resolve: (data): number => {
+              if (typeof data === 'object' && typeof data.test === 'object') {
+                return 1;
+              }
+
+              if (typeof data !== 'object') {
+                return 0;
+              }
+
+              return 2;
+            },
+          }),
+        });
+
+        it('should succeed#schema-1', () => schema.validate({
+          union: 'test',
+        })
+          .exec()
+          .then((value) => {
+            expect(value).to.eql({
+              union: 'test',
+            });
+          }).should.be.fulfilled);
+
+        it('should succeed#schema-2', () => schema.validate({
+          union: {
+            test: {
+              test1: 'test',
+              test2: 'test',
+            },
+          },
+        })
+          .exec()
+          .then((value) => {
+            expect(value).to.eql({
+              union: {
+                test: {
+                  test1: 'test',
+                  test2: 'test',
+                },
+              },
+            });
+          }).should.be.fulfilled);
+
+        it('should fail#schema-missing', () => schema.validate({
+          union: {
+            test1: {
+              test1: 'test',
+              test2: 'test',
+            },
+          },
+        })
+          .exec()
+          .catch((e: ValidationError) => {
+            expect(e.code).to.equal(ObjectSchema.Types.Union
+              .validationErrorCodes.SCHEMA_MISSING);
+            expect(e.path).to.equal('union');
+          }).should.be.fulfilled);
+      });
+    });
+
     // Type - ObjectSchema
     // -------------------------------------------------------------------------
     describe('ObjectSchema', () => {

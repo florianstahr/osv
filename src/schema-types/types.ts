@@ -52,3 +52,9 @@ export interface StringSchemaTypeOptions extends BaseSchemaTypeOptions {
   minLength?: number;
   maxLength?: number;
 }
+
+export interface UnionSchemaTypeOptions<Data = any> extends BaseSchemaTypeOptions {
+  schemas: ObjectSchema<Data>[];
+  resolve?: (value: any) => number;
+  allowNull?: boolean;
+}
