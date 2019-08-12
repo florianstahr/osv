@@ -253,6 +253,17 @@ Everything from `BaseSchemaType` and ...
 | `positive?` | value has to be positive | `boolean` | |
 | `negative?` | value has to be negative | `boolean` | |
 
+### OptionalSchemaType - `ObjectSchema.Types.Optional`
+
+#### Options
+
+Everything from `BaseSchemaType` and ...
+
+| Option Path | Info | Type | Default |
+| --- | :---: | :---: | ---: |
+| **`item`** | array item object schema | `ObjectSchema` | |
+| `allowNull?` | allow `null` as a valid value | `boolean` | |
+
 ### StringSchemaType - `ObjectSchema.Types.String`
 
 #### Options
@@ -268,6 +279,18 @@ Everything from `BaseSchemaType` and ...
 | `length?` | value has to be of length | `number` | |
 | `minLength?` | value has to be longer than minLength | `number` | |
 | `maxLength?` | value has to be shorter than maxLength | `number` | |
+
+### UnionSchemaType - `ObjectSchema.Types.Union`
+
+#### Options
+
+Everything from `BaseSchemaType` and ...
+
+| Option Path | Info | Type | Default |
+| --- | :---: | :---: | ---: |
+| **`schemas`** | array of ObjectSchemas which to use for validation | `ObjectSchema[]` | |
+| `allowNull?` | allow `null` as a valid value | `boolean` | |
+| `resolve?` | get index of schema in schemas array to use for validation. otherwise all schemas are tried. | `(data: any) => number` | |
 
 ## Example
 

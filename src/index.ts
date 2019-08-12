@@ -6,7 +6,9 @@ export {
   BaseSchemaTypeOptions,
   BooleanSchemaTypeOptions,
   NumberSchemaTypeOptions,
+  OptionalSchemaTypeOptions,
   StringSchemaTypeOptions,
+  UnionSchemaTypeOptions,
 
   RequiredSchemaTypeCallback,
 } from './schema-types/types';
@@ -39,7 +41,15 @@ export {
 } from './schema-types/number.schema-type';
 
 export {
+  default as OptionalSchemaType,
+} from './schema-types/optional.schema-type';
+
+export {
   default as StringSchemaType,
 } from './schema-types/string.schema-type';
+
+export {
+  default as UnionSchemaType,
+} from './schema-types/union.schema-type';
 
 export default ObjectSchema;
