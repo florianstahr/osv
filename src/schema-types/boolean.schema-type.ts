@@ -1,21 +1,20 @@
-import BaseSchemaType, { InternalValidationResult } from './base.schema-type';
-import { BooleanSchemaTypeOptions } from './types';
-import { DeepPartial } from '../helpers.types';
+import BaseSchemaType from './base.schema-type';
+import InternalTypeRef from '../types/internal.type-ref';
 
-class BooleanSchemaType<Data> extends BaseSchemaType<Data, BooleanSchemaTypeOptions> {
+class BooleanSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Boolean.Options> {
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'boolean/required-but-missing',
     NOT_OF_TYPE: 'boolean/not-of-type',
     NULL_NOT_ALLOWED: 'array/null-not-allowed',
   };
 
-  public constructor(options: BooleanSchemaTypeOptions = {}) {
+  public constructor(options: InternalTypeRef.SchemaTypes.Boolean.Options = {}) {
     super(options);
   }
 
   protected _validateWithOptions = (
-    value: any, data: DeepPartial<Data>, path: string[],
-  ): InternalValidationResult<any> => {
+    value: any, data: any, path: string[],
+  ): InternalTypeRef.Validation.InternalResult => {
     const { allowNull } = this._options;
 
     // allowNull: allow value to be null

@@ -1,40 +1,8 @@
-/* eslint-disable no-param-reassign,@typescript-eslint/array-type */
-import BaseSchemaType, {
-  InternalValidationResult, ValidationError,
-  ValidationResult,
-} from './schema-types/base.schema-type';
-import SchemaTypes from './schema-types';
-
-export interface ObjectSchemaValidationOptions {
-  check?: {
-    whitelist?: string[];
-    blacklist?: string[];
-  };
-}
-
-export type Validator<Data> = BaseSchemaType<Data> | ObjectSchema<Data>;
-
-export interface SchemaDefinitionObject<Data> {
-  [path: string]: SchemaDefinitionObject<Data> | Validator<Data>;
-}
-
-export type SchemaDefinition<Data> = SchemaDefinitionObject<Data> | Validator<Data>;
-
-export interface SchemaPath<Data> {
-  path: string;
-  validator: Validator<Data>;
-}
-
-export interface SchemaValidateArgs<Data> {
-  value: any;
-  data: any;
-  schema: SchemaDefinition<Data> | Validator<Data>;
-  path: string[];
-  check: {
-    whitelist: string[];
-    blacklist: string[];
-  };
-}
+import BaseSchemaType from './schema-types/base.schema-type';
+import SchemaTypes, { createTypes, CreateTypeValidators } from './schema-types/index.schema-types';
+import InternalTypeRef from './types/internal.type-ref';
+import ValidationError from './validation/error.validation';
+import Helpers from './helpers';
 
 const prepareSchemaWhiteAndBlacklistPaths = (
   paths: string[], currentPath: string,
@@ -45,12 +13,12 @@ const prepareSchemaWhiteAndBlacklistPaths = (
       return path.replace(regex, '').replace(/^\./, '');
     }
     return '';
-  }).filter(path => !!path);
+  }).filter((path): boolean => !!path);
 };
 
 const checkWhitelistAndBlacklist = (check: {
-  whitelist: string[]; // nur die
-  blacklist: string[]; // alles, aber nicht die
+  whitelist: string[]; // just them
+  blacklist: string[]; // all, but not them
 }, path: string): {
   check: boolean;
   next: {
@@ -104,27 +72,44 @@ const checkWhitelistAndBlacklist = (check: {
 };
 
 class ObjectSchema<Data> {
-  protected _original: SchemaDefinition<Data>;
+  protected _original: InternalTypeRef.Schema.Definition<Data>;
 
-  protected _parsedTree: SchemaDefinition<Data>;
+  protected _parsedTree: InternalTypeRef.Schema.Definition<Data>;
 
-  protected _paths: SchemaPath<Data>[] = [];
+  protected _paths: InternalTypeRef.Schema.Path<Data>[] = [];
 
-  public static Types = SchemaTypes;
+  // -----------------------------------------------------------------------------------------------
+  // constructor
 
-  public static validationErrorCodes = {
-    UNKNOWN: 'schema/unknown',
-  };
-
-  public constructor(definition: SchemaDefinition<Data>) {
+  public constructor(definition: InternalTypeRef.Schema.Definition<Data>) {
     this._original = definition;
 
     this._parsedTree = this._parseSchemaDefinition(definition);
   }
 
+  // -----------------------------------------------------------------------------------------------
+  // public statics
+
+  public static create = <Data>(
+    definition: InternalTypeRef.Schema.Definition<Data>,
+  ): ObjectSchema<Data> => new ObjectSchema<Data>(definition);
+
+  public static helpers: InternalTypeRef.Helpers.Exposed = Helpers;
+
+  public static Types = SchemaTypes;
+
+  public static validators: CreateTypeValidators = createTypes;
+
+  public static validationErrorCodes = {
+    UNKNOWN: 'schema/unknown',
+  };
+
+  // -----------------------------------------------------------------------------------------------
+  // public methods
+
   public validate = (
-    value: any, options: ObjectSchemaValidationOptions = {},
-  ): ValidationResult<Data> => {
+    value: any, options: InternalTypeRef.Schema.ValidationOptions = {},
+  ): InternalTypeRef.Validation.Result<Data> => {
     const result = this._validate({
       value,
       data: value,
@@ -158,21 +143,22 @@ class ObjectSchema<Data> {
   ): value is ObjectSchema<Data> => value instanceof ObjectSchema;
 
   protected _parseSchemaDefinition = (
-    schema: SchemaDefinition<Data>, path: string[] = [],
-  ): SchemaDefinition<Data> => {
+    schema: InternalTypeRef.Schema.Definition<Data>, path: string[] = [],
+  ): InternalTypeRef.Schema.Definition<Data> => {
     if (ObjectSchema.isValidValidator(schema)) {
       this._paths.push({
         path: path.join('.'),
-        validator: schema as Validator<Data>,
+        validator: schema as InternalTypeRef.Schema.Validator<Data>,
       });
       return schema;
     }
 
     if (typeof schema === 'object') {
-      const parsed: SchemaDefinitionObject<Data> = {};
+      const parsed: InternalTypeRef.Schema.DefinitionObject<Data> = {};
       Object.keys(schema).forEach((schemaKey) => {
         const nestedParsed = this._parseSchemaDefinition(
-          (schema as SchemaDefinitionObject<Data>)[schemaKey] as SchemaDefinition<Data>,
+          (schema as InternalTypeRef.Schema
+            .DefinitionObject<Data>)[schemaKey] as InternalTypeRef.Schema.Definition<Data>,
           [...path, schemaKey],
         );
 
@@ -192,8 +178,8 @@ class ObjectSchema<Data> {
   protected _validate = (
     {
       value, data, schema, path, check,
-    }: SchemaValidateArgs<Data>,
-  ): InternalValidationResult<any> | null => {
+    }: InternalTypeRef.Schema.ValidateInput<Data>,
+  ): InternalTypeRef.Validation.InternalResult | null => {
     if (schema instanceof BaseSchemaType) {
       return schema.validate(value, data, path, {
         whitelist: prepareSchemaWhiteAndBlacklistPaths(check.whitelist, path.join('.')),
@@ -258,8 +244,8 @@ class ObjectSchema<Data> {
   };
 
   protected _makeValidationResult = (
-    result: InternalValidationResult<Data>,
-  ): ValidationResult<Data> => ({
+    result: InternalTypeRef.Validation.InternalResult,
+  ): InternalTypeRef.Validation.Result<Data> => ({
     error: result.error,
     value: result.value,
     exec: (): Promise<Data> => (result.error
