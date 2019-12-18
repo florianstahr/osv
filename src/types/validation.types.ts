@@ -1,4 +1,4 @@
-import { ValidationError } from '../schema-types/base.schema-type';
+import ValidationError from '../validation/error.validation';
 
 export interface ValidationErrorArgs {
   code: string;
