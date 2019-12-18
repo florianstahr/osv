@@ -17,26 +17,21 @@ const SchemaTypes = {
   Union: UnionSchemaType,
 };
 
-type CreateTypeValidator<Options extends InternalTypeRef.SchemaTypes.Base.Options,
-  TypeValidator extends BaseSchemaType<Options>> = <Data = any>(
-    options: Options,
-  ) => TypeValidator;
-
 export interface CreateTypeValidators {
-  createArrayTypeValidator: CreateTypeValidator<InternalTypeRef.SchemaTypes
-    .Array.Options, ArraySchemaType>;
-  createBaseTypeValidator: CreateTypeValidator<InternalTypeRef.SchemaTypes
-    .Base.Options, BaseSchemaType>;
-  createBooleanTypeValidator: CreateTypeValidator<InternalTypeRef.SchemaTypes
-    .Boolean.Options, BooleanSchemaType>;
-  createNumberTypeValidator: CreateTypeValidator<InternalTypeRef.SchemaTypes
-    .Number.Options, NumberSchemaType>;
-  createOptionalTypeValidator: CreateTypeValidator<InternalTypeRef.SchemaTypes
-    .Optional.Options, OptionalSchemaType>;
-  createStringTypeValidator: CreateTypeValidator<InternalTypeRef.SchemaTypes
-    .String.Options, StringSchemaType>;
-  createUnionTypeValidator: CreateTypeValidator<InternalTypeRef.SchemaTypes
-    .Union.Options, UnionSchemaType>;
+  createArrayTypeValidator: InternalTypeRef.SchemaTypes
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Array.Options, ArraySchemaType>;
+  createBaseTypeValidator: InternalTypeRef.SchemaTypes
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Base.Options, BaseSchemaType>;
+  createBooleanTypeValidator: InternalTypeRef.SchemaTypes
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Boolean.Options, BooleanSchemaType>;
+  createNumberTypeValidator: InternalTypeRef.SchemaTypes
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Number.Options, NumberSchemaType>;
+  createOptionalTypeValidator: InternalTypeRef.SchemaTypes
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Optional.Options, OptionalSchemaType>;
+  createStringTypeValidator: InternalTypeRef.SchemaTypes
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.String.Options, StringSchemaType>;
+  createUnionTypeValidator: InternalTypeRef.SchemaTypes
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Union.Options, UnionSchemaType>;
 }
 
 const createTypes: CreateTypeValidators = {

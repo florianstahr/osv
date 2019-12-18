@@ -1,3 +1,3 @@
-import * as ObjectSchemaValidationTypeRef from './exposed.types';
+import * as OSVTypeRef from './exposed.types';
 
-export default ObjectSchemaValidationTypeRef;
+export default OSVTypeRef;
