@@ -1,9 +1,8 @@
 /* eslint-disable no-await-in-loop,no-loop-func */
-import BaseSchemaType, { InternalValidationResult } from './base.schema-type';
-import { OptionalSchemaTypeOptions } from './types';
-import { DeepPartial } from '../helpers.types';
+import BaseSchemaType from './base.schema-type';
+import InternalTypeRef from '../types/internal.type-ref';
 
-class OptionalSchemaType<Data> extends BaseSchemaType<Data, OptionalSchemaTypeOptions> {
+class OptionalSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Optional.Options> {
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'optional/required-but-missing',
     NULL_NOT_ALLOWED: 'optional/null-not-allowed',
@@ -11,9 +10,9 @@ class OptionalSchemaType<Data> extends BaseSchemaType<Data, OptionalSchemaTypeOp
   };
 
   protected _validateWithOptions = (
-    value: any, data: DeepPartial<Data>, path: string[],
+    value: any, data: any, path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalValidationResult<any> => {
+  ): InternalTypeRef.Validation.InternalResult => {
     const {
       allowNull, item,
     } = this._options;
@@ -47,7 +46,7 @@ class OptionalSchemaType<Data> extends BaseSchemaType<Data, OptionalSchemaTypeOp
         });
       }
 
-      const validatedItem: InternalValidationResult<any> = item.validate(value, {
+      const validatedItem: InternalTypeRef.Validation.InternalResult = item.validate(value, {
         check,
       });
 

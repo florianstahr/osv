@@ -1,9 +1,7 @@
-/* eslint-disable no-await-in-loop,no-loop-func */
-import BaseSchemaType, { InternalValidationResult } from './base.schema-type';
-import { ArraySchemaTypeOptions } from './types';
-import { DeepPartial } from '../helpers.types';
+import BaseSchemaType from './base.schema-type';
+import InternalTypeRef from '../types/internal.type-ref';
 
-class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions> {
+class ArraySchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Array.Options> {
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'array/required-but-missing',
     NOT_OF_TYPE: 'array/not-of-type',
@@ -15,9 +13,9 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
   };
 
   protected _validateWithOptions = (
-    value: any, data: DeepPartial<Data>, path: string[],
+    value: any, data: any, path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalValidationResult<any> => {
+  ): InternalTypeRef.Validation.InternalResult => {
     const {
       allowNull, min, max, length, item,
     } = this._options;
@@ -91,14 +89,17 @@ class ArraySchemaType<Data> extends BaseSchemaType<Data, ArraySchemaTypeOptions>
   protected _validateArrayItems = (
     arrayItems: any[], path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalValidationResult<any> => {
+  ): InternalTypeRef.Validation.InternalResult => {
     const { item } = this._options;
     const results: any[] = [];
 
     for (let i = 0; i < arrayItems.length; i += 1) {
-      const validatedItem: InternalValidationResult<any> = item.validate(arrayItems[i], {
-        check,
-      });
+      const validatedItem: InternalTypeRef.Validation.InternalResult = item.validate(
+        arrayItems[i],
+        {
+          check,
+        },
+      );
 
       if (validatedItem.error) {
         return this._validateError(validatedItem.error.code, {

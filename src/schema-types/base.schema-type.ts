@@ -1,59 +1,21 @@
-import { BaseSchemaTypeOptions } from './types';
-import { DeepPartial } from '../helpers.types';
+import InternalTypeRef from '../types/internal.type-ref';
+import ValidationError from '../validation/error.validation';
 
-export interface ValidationErrorArgs {
-  code: string;
-  value?: any;
-  path: string[];
-}
-
-class ValidationError extends Error {
-  public code: string;
-
-  public value: any;
-
-  public path: string;
-
-  public constructor({ code, value = undefined, path }: ValidationErrorArgs) {
-    super(`There was an error while validating: ${code} [${path.join('.')}]`);
-    this.code = code;
-    this.value = value;
-    this.path = path.join('.');
-  }
-}
-
-export interface ValidationErrorOpts {
-  value?: any;
-  path: string[];
-}
-
-export interface InternalValidationResult<Data = any> {
-  error?: ValidationError;
-  value?: Data;
-}
-
-export interface ValidationResult<Data> {
-  error: ValidationError | undefined;
-  value: Data | undefined;
-  exec: () => Promise<Data>;
-}
-
-class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTypeOptions> {
+class BaseSchemaType<Options extends InternalTypeRef.SchemaTypes
+  .Base.Options = InternalTypeRef.SchemaTypes.Base.Options> {
   protected _options: Options;
-
-  public static ValidationError = ValidationError;
 
   public constructor(options: Options) {
     this._options = options;
   }
 
   public validate = (
-    value: any, data: DeepPartial<Data>, path: string[],
+    value: any, data: any, path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalValidationResult<Data> => {
+  ): InternalTypeRef.Validation.InternalResult => {
     const val = this._preValidate(value, data);
 
-    const result: InternalValidationResult<Data> = this
+    const result: InternalTypeRef.Validation.InternalResult = this
       ._validateWithOptions(val, data, path, check);
 
     if (result.error) {
@@ -66,44 +28,44 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
     };
   };
 
-  protected _preValidate = (value: any, data: DeepPartial<Data>) => {
+  protected _preValidate = (value: any, data: any) => {
     const {
       pre,
     } = this._options;
 
     if (pre && typeof pre.validate === 'function') {
-      return pre.validate<DeepPartial<Data>>(value, data);
+      return pre.validate(value, data);
     }
     return value;
   };
 
   protected _validateWithOptions = (
-    value: any, data: DeepPartial<Data>, path: string[],
+    value: any, data: any, path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalValidationResult<any> => ({ value });
+  ): InternalTypeRef.Validation.InternalResult => ({ value });
 
-  protected _postValidate = (value: any, data: DeepPartial<Data>) => {
+  protected _postValidate = (value: any, data: any) => {
     const {
       post,
     } = this._options;
 
     if (post && typeof post.validate === 'function') {
-      return post.validate<DeepPartial<Data>>(value, data);
+      return post.validate(value, data);
     }
     return value;
   };
 
   protected _validateError = (
-    code: string, opts: ValidationErrorOpts,
-  ): InternalValidationResult<any> => ({
+    code: string, options: InternalTypeRef.Validation.ErrorOptions,
+  ): InternalTypeRef.Validation.InternalResult => ({
     error: new ValidationError({
       code,
-      ...opts,
+      ...options,
     }),
   });
 
   protected _checkRequired = (
-    value: any, data: DeepPartial<Data>,
+    value: any, data: any,
   ): boolean => {
     const { required } = this._options;
 
@@ -113,9 +75,5 @@ class BaseSchemaType<Data, Options extends BaseSchemaTypeOptions = BaseSchemaTyp
       );
   };
 }
-
-export {
-  ValidationError,
-};
 
 export default BaseSchemaType;

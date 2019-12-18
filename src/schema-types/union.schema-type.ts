@@ -1,9 +1,8 @@
 /* eslint-disable no-await-in-loop,no-loop-func */
-import BaseSchemaType, { InternalValidationResult } from './base.schema-type';
-import { UnionSchemaTypeOptions } from './types';
-import { DeepPartial } from '../helpers.types';
+import BaseSchemaType from './base.schema-type';
+import InternalTypeRef from '../types/internal.type-ref';
 
-class UnionSchemaType<Data> extends BaseSchemaType<Data, UnionSchemaTypeOptions> {
+class UnionSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Union.Options> {
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'union/required-but-missing',
     NULL_NOT_ALLOWED: 'union/null-not-allowed',
@@ -12,9 +11,9 @@ class UnionSchemaType<Data> extends BaseSchemaType<Data, UnionSchemaTypeOptions>
   };
 
   protected _validateWithOptions = (
-    value: any, data: DeepPartial<Data>, path: string[],
+    value: any, data: any, path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalValidationResult<any> => {
+  ): InternalTypeRef.Validation.InternalResult => {
     const {
       allowNull, schemas, resolve,
     } = this._options;
@@ -60,9 +59,10 @@ class UnionSchemaType<Data> extends BaseSchemaType<Data, UnionSchemaTypeOptions>
           });
         }
 
-        const validatedItem: InternalValidationResult<any> = schemas[index].validate(value, {
-          check,
-        });
+        const validatedItem: InternalTypeRef.Validation.InternalResult = schemas[index]
+          .validate(value, {
+            check,
+          });
 
         if (validatedItem.error) {
           return this._validateError(validatedItem.error.code, {
@@ -80,9 +80,10 @@ class UnionSchemaType<Data> extends BaseSchemaType<Data, UnionSchemaTypeOptions>
       }
 
       for (let i = 0; i < schemas.length; i += 1) {
-        const validatedItem: InternalValidationResult<any> = schemas[i].validate(value, {
-          check,
-        });
+        const validatedItem: InternalTypeRef.Validation.InternalResult = schemas[i]
+          .validate(value, {
+            check,
+          });
 
         if (!validatedItem.error) {
           return {
