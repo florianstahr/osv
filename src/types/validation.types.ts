@@ -11,13 +11,7 @@ export interface ErrorOptions {
   path: string[];
 }
 
-export interface InternalResult<Data = any> {
+export interface Result<Value = any> {
   error?: ValidationError;
-  value?: Data;
-}
-
-export interface Result<Data> {
-  error: ValidationError | undefined;
-  value: Data | undefined;
-  exec: () => Promise<Data>;
+  value?: Value;
 }

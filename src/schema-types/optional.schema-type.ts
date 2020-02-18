@@ -10,9 +10,11 @@ class OptionalSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Opti
   };
 
   protected _validateWithOptions = (
-    value: any, data: any, path: string[],
+    value: any,
+    data: any,
+    path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalTypeRef.Validation.InternalResult => {
+  ): InternalTypeRef.Validation.Result => {
     const {
       allowNull, item,
     } = this._options;
@@ -46,7 +48,7 @@ class OptionalSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Opti
         });
       }
 
-      const validatedItem: InternalTypeRef.Validation.InternalResult = item.validate(value, {
+      const validatedItem: InternalTypeRef.Validation.Result = item.validateSync(value, {
         check,
       });
 

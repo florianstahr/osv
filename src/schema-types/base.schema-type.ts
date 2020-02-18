@@ -9,13 +9,15 @@ class BaseSchemaType<Options extends InternalTypeRef.SchemaTypes
     this._options = options;
   }
 
-  public validate = (
-    value: any, data: any, path: string[],
+  public validate = <Value extends any = any>(
+    value: any,
+    data: any,
+    path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalTypeRef.Validation.InternalResult => {
+  ): InternalTypeRef.Validation.Result<Value> => {
     const val = this._preValidate(value, data);
 
-    const result: InternalTypeRef.Validation.InternalResult = this
+    const result: InternalTypeRef.Validation.Result = this
       ._validateWithOptions(val, data, path, check);
 
     if (result.error) {
@@ -40,11 +42,16 @@ class BaseSchemaType<Options extends InternalTypeRef.SchemaTypes
   };
 
   protected _validateWithOptions = (
-    value: any, data: any, path: string[],
+    value: any,
+    data: any,
+    path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalTypeRef.Validation.InternalResult => ({ value });
+  ): InternalTypeRef.Validation.Result => ({ value });
 
-  protected _postValidate = (value: any, data: any) => {
+  protected _postValidate = (
+    value: any,
+    data: any,
+  ) => {
     const {
       post,
     } = this._options;
@@ -56,8 +63,9 @@ class BaseSchemaType<Options extends InternalTypeRef.SchemaTypes
   };
 
   protected _validateError = (
-    code: string, options: InternalTypeRef.Validation.ErrorOptions,
-  ): InternalTypeRef.Validation.InternalResult => ({
+    code: string,
+    options: InternalTypeRef.Validation.ErrorOptions,
+  ): InternalTypeRef.Validation.Result => ({
     error: new ValidationError({
       code,
       ...options,
@@ -65,7 +73,8 @@ class BaseSchemaType<Options extends InternalTypeRef.SchemaTypes
   });
 
   protected _checkRequired = (
-    value: any, data: any,
+    value: any,
+    data: any,
   ): boolean => {
     const { required } = this._options;
 

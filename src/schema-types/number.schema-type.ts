@@ -20,8 +20,10 @@ class NumberSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Number
   }
 
   protected _validateWithOptions = (
-    value: any, data: any, path: string[],
-  ): InternalTypeRef.Validation.InternalResult => {
+    value: any,
+    data: any,
+    path: string[],
+  ): InternalTypeRef.Validation.Result => {
     const {
       allowNull, min, max, greater, less, integer, positive, negative,
     } = this._options;

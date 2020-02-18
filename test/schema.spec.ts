@@ -27,14 +27,15 @@ describe('ObjectSchema', () => {
             foo: 'bar',
           },
         },
-      }).exec()
+      })
         .should.to.be.fulfilled;
     });
 
     it('should succeed#just-schema-type', async () => {
       const schema = OSV.schema(OSV.string({}));
 
-      return schema.validate('foo').exec().should.to.be.fulfilled;
+      return schema.validate('foo')
+        .should.to.be.fulfilled;
     });
   });
 
@@ -51,7 +52,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           required: true,
         })
-          .validate('').exec()
+          .validate('')
           .then((data) => {
             expect(data).to.equal('');
           })
@@ -60,7 +61,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           required: true,
         })
-          .validate(undefined).exec()
+          .validate(undefined)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.string.REQUIRED_BUT_MISSING,
             path: [],
@@ -71,7 +72,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           allowNull: true,
         })
-          .validate(null).exec()
+          .validate(null)
           .then((data) => {
             expect(data).to.eql(null);
           })
@@ -82,7 +83,7 @@ describe('ObjectSchema', () => {
             allowNull: true,
           }),
         })
-          .validate({ foo: null }).exec()
+          .validate({ foo: null })
           .then((data) => {
             expect(data).to.eql({ foo: null });
           })
@@ -91,7 +92,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           allowNull: false,
         })
-          .validate(null).exec()
+          .validate(null)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.string.NULL_NOT_ALLOWED,
             path: [],
@@ -102,7 +103,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           oneOf: ['foo', 'bar'],
         })
-          .validate('foo').exec()
+          .validate('foo')
           .then((data) => {
             expect(data).to.equal('foo');
           })
@@ -111,7 +112,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           oneOf: ['foo'],
         })
-          .validate('bar').exec()
+          .validate('bar')
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.string.NOT_ALLOWED,
             path: [],
@@ -122,7 +123,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           empty: true,
         })
-          .validate('').exec()
+          .validate('')
           .then((data) => {
             expect(data).to.equal('');
           })
@@ -131,7 +132,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           empty: false,
         })
-          .validate('').exec()
+          .validate('')
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.string.NOT_EMPTY,
             path: [],
@@ -142,7 +143,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           regex: /^foo/,
         })
-          .validate('foobar').exec()
+          .validate('foobar')
           .then((data) => {
             expect(data).to.equal('foobar');
           })
@@ -151,7 +152,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           regex: /^foo/,
         })
-          .validate('barfoo').exec()
+          .validate('barfoo')
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.string.REGEX_FAILED,
             path: [],
@@ -162,7 +163,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           length: 3,
         })
-          .validate('foo').exec()
+          .validate('foo')
           .then((data) => {
             expect(data).to.equal('foo');
           })
@@ -171,7 +172,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           length: 3,
         })
-          .validate('foobar').exec()
+          .validate('foobar')
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.string.LENGTH_NOT_ALLOWED,
             path: [],
@@ -182,7 +183,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           minLength: 3,
         })
-          .validate('foo').exec()
+          .validate('foo')
           .then((data) => {
             expect(data).to.equal('foo');
           })
@@ -191,7 +192,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           minLength: 4,
         })
-          .validate('foo').exec()
+          .validate('foo')
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.string.TOO_SHORT,
             path: [],
@@ -202,7 +203,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getStringObjectSchema({
           maxLength: 3,
         })
-          .validate('foo').exec()
+          .validate('foo')
           .then((data) => {
             expect(data).to.equal('foo');
           })
@@ -211,7 +212,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getStringObjectSchema({
           maxLength: 2,
         })
-          .validate('foo').exec()
+          .validate('foo')
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.string.TOO_LONG,
             path: [],
@@ -231,7 +232,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           required: true,
         })
-          .validate(6.12765890).exec()
+          .validate(6.12765890)
           .then((data) => {
             expect(data).to.equal(6.12765890);
           })
@@ -240,7 +241,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           required: true,
         })
-          .validate(null).exec()
+          .validate(null)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.REQUIRED_BUT_MISSING,
             path: [],
@@ -251,7 +252,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           allowNull: true,
         })
-          .validate(null).exec()
+          .validate(null)
           .then((data) => {
             expect(data).to.eql(null);
           })
@@ -260,7 +261,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           allowNull: false,
         })
-          .validate(null).exec()
+          .validate(null)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.NULL_NOT_ALLOWED,
             path: [],
@@ -271,7 +272,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           min: 6,
         })
-          .validate(6).exec()
+          .validate(6)
           .then((data) => {
             expect(data).to.equal(6);
           })
@@ -280,7 +281,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           min: 6,
         })
-          .validate(5).exec()
+          .validate(5)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.MIN,
             path: [],
@@ -291,7 +292,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           max: 6,
         })
-          .validate(6).exec()
+          .validate(6)
           .then((data) => {
             expect(data).to.equal(6);
           })
@@ -300,7 +301,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           max: 6,
         })
-          .validate(7).exec()
+          .validate(7)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.MAX,
             path: [],
@@ -311,7 +312,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           greater: 6,
         })
-          .validate(6.1).exec()
+          .validate(6.1)
           .then((data) => {
             expect(data).to.equal(6.1);
           }).should.be.fulfilled);
@@ -319,7 +320,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           greater: 6,
         })
-          .validate(6).exec()
+          .validate(6)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.GREATER,
             path: [],
@@ -330,7 +331,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           less: 6,
         })
-          .validate(5.99).exec()
+          .validate(5.99)
           .then((data) => {
             expect(data).to.equal(5.99);
           })
@@ -339,7 +340,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           less: 6,
         })
-          .validate(6).exec()
+          .validate(6)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.LESS,
             path: [],
@@ -350,7 +351,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           integer: true,
         })
-          .validate(6).exec()
+          .validate(6)
           .then((data) => {
             expect(data).to.equal(6);
           })
@@ -359,7 +360,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           integer: true,
         })
-          .validate(6.1).exec()
+          .validate(6.1)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.INTEGER,
             path: [],
@@ -370,7 +371,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           positive: true,
         })
-          .validate(6).exec()
+          .validate(6)
           .then((data) => {
             expect(data).to.equal(6);
           })
@@ -379,7 +380,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           positive: true,
         })
-          .validate(0).exec()
+          .validate(0)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.POSITIVE,
             path: [],
@@ -390,7 +391,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getNumberObjectSchema({
           negative: true,
         })
-          .validate(-6).exec()
+          .validate(-6)
           .then((data) => {
             expect(data).to.equal(-6);
           })
@@ -399,7 +400,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getNumberObjectSchema({
           negative: true,
         })
-          .validate(0).exec()
+          .validate(0)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.number.NEGATIVE,
             path: [],
@@ -419,7 +420,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getBooleanObjectSchema({
           required: true,
         })
-          .validate(false).exec()
+          .validate(false)
           .then((data) => {
             expect(data).to.equal(false);
           })
@@ -428,7 +429,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getBooleanObjectSchema({
           required: true,
         })
-          .validate(null).exec()
+          .validate(null)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.boolean.REQUIRED_BUT_MISSING,
             path: [],
@@ -439,7 +440,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getBooleanObjectSchema({
           allowNull: true,
         })
-          .validate(null).exec()
+          .validate(null)
           .then((data) => {
             expect(data).to.eql(null);
           })
@@ -448,7 +449,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getBooleanObjectSchema({
           allowNull: false,
         })
-          .validate(null).exec()
+          .validate(null)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.boolean.NULL_NOT_ALLOWED,
             path: [],
@@ -473,7 +474,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           required: true,
         })
-          .validate(['foo']).exec()
+          .validate(['foo'])
           .then((data) => {
             expect(data).to.eql(['foo']);
           }).should.be.fulfilled);
@@ -481,7 +482,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           required: true,
         })
-          .validate(null).exec()
+          .validate(null)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.array.REQUIRED_BUT_MISSING,
             path: [],
@@ -492,7 +493,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           allowNull: true,
         })
-          .validate(null).exec()
+          .validate(null)
           .then((data) => {
             expect(data).to.eql(null);
           }).should.be.fulfilled);
@@ -500,7 +501,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           allowNull: false,
         })
-          .validate(null).exec()
+          .validate(null)
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.array.NULL_NOT_ALLOWED,
             path: [],
@@ -511,7 +512,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           min: 2,
         })
-          .validate(['foo', 'bar']).exec()
+          .validate(['foo', 'bar'])
           .then((data) => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
@@ -519,7 +520,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           min: 2,
         })
-          .validate(['foo']).exec()
+          .validate(['foo'])
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.array.MIN,
             path: [],
@@ -530,7 +531,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           max: 2,
         })
-          .validate(['foo', 'bar']).exec()
+          .validate(['foo', 'bar'])
           .then((data) => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
@@ -538,7 +539,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           max: 1,
         })
-          .validate(['foo', 'bar']).exec()
+          .validate(['foo', 'bar'])
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.array.MAX,
             path: [],
@@ -549,7 +550,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => getArrayObjectSchema({
           length: 2,
         })
-          .validate(['foo', 'bar']).exec()
+          .validate(['foo', 'bar'])
           .then((data) => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
@@ -557,7 +558,7 @@ describe('ObjectSchema', () => {
         it('should fail', () => getArrayObjectSchema({
           length: 2,
         })
-          .validate(['foo']).exec()
+          .validate(['foo'])
           .should.be.rejectedWith(OSV.helpers.createValidationError({
             code: OSV.validationErrorCodes.array.LENGTH_NOT_ALLOWED,
             path: [],
@@ -582,7 +583,7 @@ describe('ObjectSchema', () => {
               { bar: 'foo' },
               { bar: 'bar' },
             ],
-          }).exec()
+          })
           .then((data) => {
             expect(data).to.eql({
               foo: [
@@ -609,7 +610,7 @@ describe('ObjectSchema', () => {
               { bar: 'foo' },
               { bar: 'ba' },
             ],
-          }).exec()
+          })
           .catch((e: OSVTypeRef.Classes.ValidationError) => {
             expect(e.code).to.equal(OSV.validationErrorCodes.string.NOT_ALLOWED);
             expect(e.path).to.equal('foo.1.bar');
@@ -632,7 +633,6 @@ describe('ObjectSchema', () => {
         });
 
         it('should succeed', () => schema.validate({})
-          .exec()
           .then((value) => {
             expect(value).to.eql({});
           }).should.be.fulfilled);
@@ -640,7 +640,6 @@ describe('ObjectSchema', () => {
         it('should fail', () => schema.validate({
           optional: null,
         })
-          .exec()
           .catch((e: OSVTypeRef.Classes.ValidationError) => {
             expect(e.code).to.equal(OSV.validationErrorCodes.optional.NULL_NOT_ALLOWED);
             expect(e.path).to.equal('optional');
@@ -660,7 +659,6 @@ describe('ObjectSchema', () => {
         it('should succeed', () => schema.validate({
           optional: null,
         })
-          .exec()
           .then((value) => {
             expect(value).to.eql({
               optional: null,
@@ -692,7 +690,6 @@ describe('ObjectSchema', () => {
         it('should succeed#required#schema-1', () => schema.validate({
           union: 'test',
         })
-          .exec()
           .then((value) => {
             expect(value).to.eql({
               union: 'test',
@@ -707,7 +704,6 @@ describe('ObjectSchema', () => {
             },
           },
         })
-          .exec()
           .then((value) => {
             expect(value).to.eql({
               union: {
@@ -722,7 +718,6 @@ describe('ObjectSchema', () => {
         it('should fail#undefined', () => schema.validate({
           union: undefined,
         })
-          .exec()
           .catch((e: OSVTypeRef.Classes.ValidationError) => {
             expect(e.code).to.equal(OSV.validationErrorCodes.union.REQUIRED_BUT_MISSING);
             expect(e.path).to.equal('union');
@@ -736,7 +731,6 @@ describe('ObjectSchema', () => {
             },
           },
         })
-          .exec()
           .catch((e: OSVTypeRef.Classes.ValidationError) => {
             expect(e.code).to.equal(OSV.validationErrorCodes.union.ALL_SCHEMAS_INVALID);
             expect(e.path).to.equal('union');
@@ -772,7 +766,6 @@ describe('ObjectSchema', () => {
         it('should succeed#schema-1', () => schema.validate({
           union: 'test',
         })
-          .exec()
           .then((value) => {
             expect(value).to.eql({
               union: 'test',
@@ -787,7 +780,6 @@ describe('ObjectSchema', () => {
             },
           },
         })
-          .exec()
           .then((value) => {
             expect(value).to.eql({
               union: {
@@ -807,7 +799,6 @@ describe('ObjectSchema', () => {
             },
           },
         })
-          .exec()
           .catch((e: OSVTypeRef.Classes.ValidationError) => {
             expect(e.code).to.equal(OSV.validationErrorCodes.union.SCHEMA_MISSING);
             expect(e.path).to.equal('union');
@@ -829,7 +820,7 @@ describe('ObjectSchema', () => {
         required: true,
         empty: false,
       })
-        .validate('foo').exec()
+        .validate('foo')
         .then((data) => {
           expect(data).to.equal('foo');
         }).should.be.fulfilled);
@@ -871,7 +862,7 @@ describe('ObjectSchema', () => {
         username: 'foo',
         email: 'foo@bar.com',
         followers: ['222222'],
-      }).exec()
+      })
         .should.to.be.fulfilled;
     });
 
@@ -919,7 +910,7 @@ describe('ObjectSchema', () => {
           },
         },
         followers: ['222222'],
-      }).exec()
+      })
         .should.to.be.fulfilled;
     });
   });
@@ -977,7 +968,7 @@ describe('ObjectSchema', () => {
         check: {
           whitelist: ['username', 'email', 'info', 'followers'],
         },
-      }).exec().should.be.fulfilled);
+      }).should.be.fulfilled);
 
       it('should succeed#blacklist', () => testSchema.validate({
         id: undefined,
@@ -996,7 +987,7 @@ describe('ObjectSchema', () => {
         check: {
           blacklist: ['id'],
         },
-      }).exec().should.be.fulfilled);
+      }).should.be.fulfilled);
     });
 
     describe('multi lvl & nested schemes', () => {
@@ -1017,7 +1008,7 @@ describe('ObjectSchema', () => {
         check: {
           whitelist: ['username', 'email', 'followers', 'info.person.firstName'],
         },
-      }).exec().should.be.fulfilled);
+      }).should.be.fulfilled);
 
       it('should fail#whitelist', () => testSchema.validate({
         id: undefined,
@@ -1036,7 +1027,7 @@ describe('ObjectSchema', () => {
         check: {
           whitelist: ['username', 'email', 'info', 'followers'],
         },
-      }).exec()
+      })
         .should.be.rejectedWith(OSV.helpers.createValidationError({
           code: OSV.validationErrorCodes.string.REQUIRED_BUT_MISSING,
           path: ['followers', '0', 'id'],
@@ -1059,7 +1050,7 @@ describe('ObjectSchema', () => {
         check: {
           blacklist: ['followers.id'],
         },
-      }).exec().should.be.fulfilled);
+      }).should.be.fulfilled);
     });
   });
 });
