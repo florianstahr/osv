@@ -8,19 +8,17 @@ It is very strongly inspired by [@hapijs/joi](https://github.com/hapijs/joi) and
 [mongoose](https://github.com/Automattic/mongoose) schema validation.
 
 ```typescript
-import ObjectSchema from 'osv';
+import OSV from 'osv';
 
-const { String, Array } = ObjectSchema.Types;
-
-const schema = new ObjectSchema({
-  users: new Array({
+const schema = OSV.schema({
+  users: OSV.array({
     required: true,
-    item: new ObjectSchema({
-      username: new String({
+    item: OSV.schema({
+      username: OSV.string({
         required: true,
         empty: false,
       }),
-      role: new String({
+      role: OSV.string({
         required: true,
         oneOf: ['owner', 'admin', 'subscriber'],
       }),
@@ -28,7 +26,7 @@ const schema = new ObjectSchema({
   }),
 });
 
-const result = schema.validate({
+const obj = {
   users: [
     {
       username: 'tomato12',
@@ -39,10 +37,26 @@ const result = schema.validate({
       role: 'admin',
     },
   ],
-}); // { value?: Data, error?: ValidationError, exec: () => Promise<Data> }
+}
 
-result.exec()
-  .then((value) => {
+// asynchronous
+
+const resultAsync = schema.validate(obj); // Promise<Data>
+
+resultAsync
+  .then(value => {
+    console.log(value); // the validated value
+  })
+  .catch(e => {
+    console.error(e); // ValidationError
+  });
+
+// synchronous
+
+const resultSync = schema.validateSync(obj); // { value?: Data, error?: ValidationError, exec: () => Promise<Data> }
+
+resultSync.exec()
+  .then(value => {
     console.log(value); // the validated value
 
     /*
@@ -60,7 +74,7 @@ result.exec()
       }
     */
   })
-  .catch((e) => {
+  .catch(e => {
     console.error(e); // ValidationError
   });
 ```
@@ -85,20 +99,19 @@ By default, all specified keys of an object are `optional`. If a key is missing 
 
 ```typescript
 // types
-type Validator<Data> = BaseSchemaType<Data>;
+type Validator<Data> = BaseSchemaType | ObjectSchema<Data>;
 
-interface SchemaDefinitionObject<Data> {
-  [path: string]: SchemaDefinitionObject<Data> | Validator<Data>;
+interface DefinitionObject<Data> {
+  [path: string]: DefinitionObject<Data> | Validator<Data>;
 }
 
-type SchemaDefinition<Data> = SchemaDefinitionObject<Data> | Validator<Data>;
+type Definition<Data> = DefinitionObject<Data> | Validator<Data>;
 ```
 
 Simply define your object schema and create an `ObjectSchema` instance.
 
 ```typescript
-import ObjectSchema from 'osv';
-const { String, Array } = ObjectSchema.Types;
+import OSV, { OSVTypeRef } from 'osv';
 
 interface User {
   id: string;
@@ -109,26 +122,28 @@ interface User {
   }[];
 }
 
-const definition: SchemaDefinition<User> = {
-  username: new String({
+const definition: OSVTypeRef.Schema.Definition<User> = {
+  username: OSV.string({
     required: true,
     empty: false,
   }),
-  role: new String({
+  role: OSV.string({
     required: true,
     oneOf: ['owner', 'admin', 'subscriber'],
   }),
-  followers: new Array({
-    item: new ObjectSchema({
-      id: new String({ required: true, empty: false }),
+  followers: OSV.array({
+    item: OSV.schema({
+      id: OSV.string({ required: true, empty: false }),
     }),
   }),
 };
 
-const schema = new ObjectSchema<User>(definition);
+const schema = OSV.schema<User>(definition);
 ```
 
-After that you can validate objects. The `validate` method returns an object with the following schema:
+After that you can validate objects. The `validate` method returns a Promise which resolves to the validated data if successful. Otherwise it rejects with a `ValidationError`.
+
+The `validateSync` method returns an object with the following schema:
 
 ```typescript
 // Data: the data type of the validated value
@@ -148,11 +163,19 @@ const user1 = {
   }],
 };
 
-schema.validate(user1).exec()
+// async
+
+schema.validate(user1)
   .then((user) => {
     // use validated user
     const username = user.username;
   });
+
+// sync
+
+const result = schema.validate(user1);
+
+console.log(result.value, result.error);
 
 const user2 = {
   username: 'tomato',
@@ -162,7 +185,7 @@ const user2 = {
   }],
 };
 
-schema.validate(user1).exec()
+schema.validate(user1)
   .catch((e) => {
     // ValidationError
     // e.message: 'There was an error while validating: string/not-allowed'
@@ -192,7 +215,7 @@ schema.validate({
   check: {
     blacklist: ['followers.id'],
   }
-}).exec() // succeeds
+}) // succeeds
   .then((user) => {
     // use validated user
     const username = user.username;
@@ -212,7 +235,7 @@ _This is the schema type which all others extend from._
 | `pre?.validate?` | run before every validation, returns value | `<D = any>(value: any, data: D) => any;` | |
 | `post?.validate?` | run after every validation, returns value | `<D = any>(value: any, data: D) => any;` | |
 
-### ArraySchemaType - `ObjectSchema.Types.Array`
+### ArraySchemaType - `OSV.array(options)` - `ObjectSchema.Types.Array`
 
 #### Options
 
@@ -226,7 +249,7 @@ Everything from `BaseSchemaType` and ...
 | `max?` | ... items at maximum | `number` | |
 | `length?` | exact ... items | `number` | |
 
-### BooleanSchemaType - `ObjectSchema.Types.Boolean`
+### BooleanSchemaType - `OSV.boolean(options)` - `ObjectSchema.Types.Boolean`
 
 #### Options
 
@@ -236,7 +259,7 @@ Everything from `BaseSchemaType` and ...
 | --- | :---: | :---: | ---: |
 | `allowNull?` | allow `null` as a valid value | `boolean` | 
 
-### NumberSchemaType - `ObjectSchema.Types.Number`
+### NumberSchemaType - `OSV.number(options)` - `ObjectSchema.Types.Number`
 
 #### Options
 
@@ -253,7 +276,7 @@ Everything from `BaseSchemaType` and ...
 | `positive?` | value has to be positive | `boolean` | |
 | `negative?` | value has to be negative | `boolean` | |
 
-### OptionalSchemaType - `ObjectSchema.Types.Optional`
+### OptionalSchemaType - `OSV.optional(options)` - `ObjectSchema.Types.Optional`
 
 #### Options
 
@@ -264,7 +287,7 @@ Everything from `BaseSchemaType` and ...
 | **`item`** | array item object schema | `ObjectSchema` | |
 | `allowNull?` | allow `null` as a valid value | `boolean` | |
 
-### StringSchemaType - `ObjectSchema.Types.String`
+### StringSchemaType - `OSV.string(options)` - `ObjectSchema.Types.String`
 
 #### Options
 
@@ -280,7 +303,7 @@ Everything from `BaseSchemaType` and ...
 | `minLength?` | value has to be longer than minLength | `number` | |
 | `maxLength?` | value has to be shorter than maxLength | `number` | |
 
-### UnionSchemaType - `ObjectSchema.Types.Union`
+### UnionSchemaType - `OSV.union(options)` - `ObjectSchema.Types.Union`
 
 #### Options
 
@@ -308,18 +331,18 @@ interface TestSchema {
   followers: string[];
 }
 
-const schema = new ObjectSchema<TestSchema>({
-  id: new ObjectSchema.Types.String({ required: true }),
-  username: new ObjectSchema.Types.String({ required: true }),
-  email: new ObjectSchema.Types.String({ required: true }),
+const schema = OSV.schema<TestSchema>({
+  id: OSV.string({ required: true }),
+  username: OSV.string({ required: true }),
+  email: OSV.string({ required: true }),
   info: {
     person: {
-      firstName: new ObjectSchema.Types.String({ }),
-      lastName: new ObjectSchema.Types.String({ }),
+      firstName: OSV.string(),
+      lastName: OSV.string(),
     },
   },
-  followers: new ObjectSchema.Types.Array({
-    item: new ObjectSchema(new ObjectSchema.Types.String({ required: true })),
+  followers: OSV.array({
+    item: OSV.schema(OSV.string({ required: true })),
   }),
 });
 
@@ -328,7 +351,7 @@ schema.validate({
   username: 'foo',
   email: 'foo@bar.com',
   followers: ['222222'],
-}).exec()
+})
   .then((result) => {
     // result:
     /*
