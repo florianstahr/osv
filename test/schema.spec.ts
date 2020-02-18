@@ -39,6 +39,20 @@ describe('ObjectSchema', () => {
     });
   });
 
+  describe('basic', () => {
+    it('should fail#expected-object', () => {
+      const schema = OSV.schema({
+        key: OSV.string({ required: true }),
+      });
+
+      return schema.validate(null)
+        .should.be.rejectedWith(OSV.helpers.createValidationError({
+          code: OSV.validationErrorCodes.EXPECTED_OBJECT,
+          path: [],
+        }).message);
+    });
+  });
+
   describe('Types', () => {
     // Type - String
     // -------------------------------------------------------------------------
