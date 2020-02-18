@@ -4,6 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/florianstahr/osv.git",
+  "homepage": "https://github.com/florianstahr/osv",
   "author": "Florian Stahr <mail@florianstahr.com>",
   "license": "MIT",
   "private": false,
@@ -15,13 +16,9 @@
     "type"
   ],
   "meta": {
-    "libraryName": "ObjectSchema"
+    "libraryName": "OSV"
   },
   "scripts": {
-    "build:dev": "webpack --config webpack.development.babel.js",
-    "build:prod": "webpack --config webpack.production.babel.js",
-    "start:dev": "NODE_ENV=development node dist/index",
-    "start:prod": "NODE_ENV=production node dist/index",
     "test": "NODE_ENV=test mocha"
   },
   "dependencies": {},
