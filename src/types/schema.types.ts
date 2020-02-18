@@ -1,11 +1,14 @@
 import BaseSchemaType from '../schema-types/base.schema-type';
 import ObjectSchema from '../schema';
+import * as Validation from './validation.types';
+
+export interface ValidationCheckOptions {
+  whitelist?: string[];
+  blacklist?: string[];
+}
 
 export interface ValidationOptions {
-  check?: {
-    whitelist?: string[];
-    blacklist?: string[];
-  };
+  check?: ValidationCheckOptions;
 }
 
 export type Validator<Data> = BaseSchemaType | ObjectSchema<Data>;
@@ -31,3 +34,10 @@ export interface ValidateInput<Data> {
     blacklist: string[];
   };
 }
+
+export type ValidateWithOptionsCallback = (
+  value: any,
+  data: any,
+  path: string[],
+  check: ValidationCheckOptions,
+) => Validation.Result;

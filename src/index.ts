@@ -4,6 +4,7 @@ import Helpers from './helpers';
 import ArraySchemaType from './schema-types/array.schema-type';
 import BaseSchemaType from './schema-types/base.schema-type';
 import BooleanSchemaType from './schema-types/boolean.schema-type';
+import CustomSchemaType from './schema-types/custom.schema-type';
 import NumberSchemaType from './schema-types/number.schema-type';
 import OptionalSchemaType from './schema-types/optional.schema-type';
 import StringSchemaType from './schema-types/string.schema-type';
@@ -18,6 +19,7 @@ const OSV: OSVTypeRef.Exposed = {
   // schema types
   array: (options) => ObjectSchema.validators.createArrayTypeValidator(options),
   boolean: (options) => ObjectSchema.validators.createBooleanTypeValidator(options),
+  custom: (options) => ObjectSchema.validators.createCustomTypeValidator(options),
   number: (options) => ObjectSchema.validators.createNumberTypeValidator(options),
   optional: (options) => ObjectSchema.validators.createOptionalTypeValidator(options),
   string: (options) => ObjectSchema.validators.createStringTypeValidator(options),
@@ -29,6 +31,7 @@ const OSV: OSVTypeRef.Exposed = {
     ...ObjectSchema.validationErrorCodes,
     array: ArraySchemaType.validationErrorCodes,
     boolean: BooleanSchemaType.validationErrorCodes,
+    custom: CustomSchemaType.validationErrorCodes,
     number: NumberSchemaType.validationErrorCodes,
     optional: OptionalSchemaType.validationErrorCodes,
     string: StringSchemaType.validationErrorCodes,
@@ -44,6 +47,7 @@ export {
   ArraySchemaType,
   BaseSchemaType,
   BooleanSchemaType,
+  CustomSchemaType,
   NumberSchemaType,
   OptionalSchemaType,
   StringSchemaType,
