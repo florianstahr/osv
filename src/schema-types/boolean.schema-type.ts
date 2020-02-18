@@ -13,8 +13,10 @@ class BooleanSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Boole
   }
 
   protected _validateWithOptions = (
-    value: any, data: any, path: string[],
-  ): InternalTypeRef.Validation.InternalResult => {
+    value: any,
+    data: any,
+    path: string[],
+  ): InternalTypeRef.Validation.Result => {
     const { allowNull } = this._options;
 
     // allowNull: allow value to be null

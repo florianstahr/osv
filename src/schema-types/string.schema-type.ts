@@ -19,8 +19,10 @@ class StringSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.String
   }
 
   protected _validateWithOptions = (
-    value: any, data: any, path: string[],
-  ): InternalTypeRef.Validation.InternalResult => {
+    value: any,
+    data: any,
+    path: string[],
+  ): InternalTypeRef.Validation.Result => {
     const {
       allowNull, empty = true, oneOf, regex, length, minLength, maxLength,
     } = this._options;

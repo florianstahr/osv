@@ -11,9 +11,11 @@ class UnionSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Union.O
   };
 
   protected _validateWithOptions = (
-    value: any, data: any, path: string[],
+    value: any,
+    data: any,
+    path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalTypeRef.Validation.InternalResult => {
+  ): InternalTypeRef.Validation.Result => {
     const {
       allowNull, schemas, resolve,
     } = this._options;
@@ -59,8 +61,8 @@ class UnionSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Union.O
           });
         }
 
-        const validatedItem: InternalTypeRef.Validation.InternalResult = schemas[index]
-          .validate(value, {
+        const validatedItem: InternalTypeRef.Validation.Result = schemas[index]
+          .validateSync(value, {
             check,
           });
 
@@ -80,8 +82,8 @@ class UnionSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Union.O
       }
 
       for (let i = 0; i < schemas.length; i += 1) {
-        const validatedItem: InternalTypeRef.Validation.InternalResult = schemas[i]
-          .validate(value, {
+        const validatedItem: InternalTypeRef.Validation.Result = schemas[i]
+          .validateSync(value, {
             check,
           });
 

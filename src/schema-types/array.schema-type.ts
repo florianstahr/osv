@@ -13,9 +13,11 @@ class ArraySchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Array.O
   };
 
   protected _validateWithOptions = (
-    value: any, data: any, path: string[],
+    value: any,
+    data: any,
+    path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalTypeRef.Validation.InternalResult => {
+  ): InternalTypeRef.Validation.Result => {
     const {
       allowNull, min, max, length, item,
     } = this._options;
@@ -87,14 +89,15 @@ class ArraySchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Array.O
   };
 
   protected _validateArrayItems = (
-    arrayItems: any[], path: string[],
+    arrayItems: any[],
+    path: string[],
     check: { whitelist?: string[]; blacklist?: string[] },
-  ): InternalTypeRef.Validation.InternalResult => {
+  ): InternalTypeRef.Validation.Result => {
     const { item } = this._options;
     const results: any[] = [];
 
     for (let i = 0; i < arrayItems.length; i += 1) {
-      const validatedItem: InternalTypeRef.Validation.InternalResult = item.validate(
+      const validatedItem: InternalTypeRef.Validation.Result = item.validateSync(
         arrayItems[i],
         {
           check,

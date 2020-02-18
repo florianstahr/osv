@@ -104,11 +104,32 @@ class ObjectSchema<Data> {
     UNKNOWN: 'schema/unknown',
   };
 
+  public static isValidValidator = (
+    validator: any,
+  ): boolean => validator instanceof SchemaTypes.Base || validator instanceof ObjectSchema;
+
+  public static isObjectSchema = <Data extends any>(
+    value: any,
+  ): value is ObjectSchema<Data> => value instanceof ObjectSchema;
+
   // -----------------------------------------------------------------------------------------------
   // public methods
 
   public validate = (
-    value: any, options: InternalTypeRef.Schema.ValidationOptions = {},
+    value: any,
+    options: InternalTypeRef.Schema.ValidationOptions = {},
+  ): Promise<Data> => {
+    const result = this.validateSync(value, options);
+
+    if (result.error) {
+      return Promise.reject(result.error);
+    }
+    return Promise.resolve(result.value as Data);
+  };
+
+  public validateSync = (
+    value: any,
+    options: InternalTypeRef.Schema.ValidationOptions = {},
   ): InternalTypeRef.Validation.Result<Data> => {
     const result = this._validate({
       value,
@@ -124,26 +145,23 @@ class ObjectSchema<Data> {
     });
 
     if (result !== null) {
-      return this._makeValidationResult(result);
+      return result;
     }
 
-    return this._makeValidationResult({
+    return {
       error: new ValidationError({
         code: ObjectSchema.validationErrorCodes.UNKNOWN,
         path: [],
       }),
-    });
+    };
   };
 
-  public static isValidValidator = (validator: any): boolean => validator
-    instanceof SchemaTypes.Base || validator instanceof ObjectSchema;
-
-  public static isObjectSchema = <Data extends any>(
-    value: any,
-  ): value is ObjectSchema<Data> => value instanceof ObjectSchema;
+  // -----------------------------------------------------------------------------------------------
+  // protected methods
 
   protected _parseSchemaDefinition = (
-    schema: InternalTypeRef.Schema.Definition<Data>, path: string[] = [],
+    schema: InternalTypeRef.Schema.Definition<Data>,
+    path: string[] = [],
   ): InternalTypeRef.Schema.Definition<Data> => {
     if (ObjectSchema.isValidValidator(schema)) {
       this._paths.push({
@@ -179,7 +197,7 @@ class ObjectSchema<Data> {
     {
       value, data, schema, path, check,
     }: InternalTypeRef.Schema.ValidateInput<Data>,
-  ): InternalTypeRef.Validation.InternalResult | null => {
+  ): InternalTypeRef.Validation.Result<Data> | null => {
     if (schema instanceof BaseSchemaType) {
       return schema.validate(value, data, path, {
         whitelist: prepareSchemaWhiteAndBlacklistPaths(check.whitelist, path.join('.')),
@@ -188,7 +206,7 @@ class ObjectSchema<Data> {
     }
 
     if (ObjectSchema.isObjectSchema<Data>(schema)) {
-      const validationResult = (schema as ObjectSchema<Data>).validate(value, {
+      const validationResult = (schema as ObjectSchema<Data>).validateSync(value, {
         check: {
           whitelist: prepareSchemaWhiteAndBlacklistPaths(check.whitelist, path.join('.')),
           blacklist: prepareSchemaWhiteAndBlacklistPaths(check.blacklist, path.join('.')),
@@ -237,20 +255,11 @@ class ObjectSchema<Data> {
         }
       }
 
-      return { value: validated };
+      return { value: validated as Data };
     }
 
     return null;
   };
-
-  protected _makeValidationResult = (
-    result: InternalTypeRef.Validation.InternalResult,
-  ): InternalTypeRef.Validation.Result<Data> => ({
-    error: result.error,
-    value: result.value,
-    exec: (): Promise<Data> => (result.error
-      ? Promise.reject(result.error) : Promise.resolve<Data>(result.value as Data)),
-  });
 }
 
 export default ObjectSchema;
