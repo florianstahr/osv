@@ -5,7 +5,7 @@ class BooleanSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Boole
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'boolean/required-but-missing',
     NOT_OF_TYPE: 'boolean/not-of-type',
-    NULL_NOT_ALLOWED: 'array/null-not-allowed',
+    NULL_NOT_ALLOWED: 'boolean/null-not-allowed',
   };
 
   public constructor(options: InternalTypeRef.SchemaTypes.Boolean.Options = {}) {

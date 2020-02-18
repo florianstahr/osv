@@ -5,7 +5,7 @@ class NumberSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Number
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'number/required-but-missing',
     NOT_OF_TYPE: 'number/not-of-type',
-    NULL_NOT_ALLOWED: 'array/null-not-allowed',
+    NULL_NOT_ALLOWED: 'number/null-not-allowed',
     MIN: 'number/min',
     MAX: 'number/max',
     GREATER: 'number/greater',
