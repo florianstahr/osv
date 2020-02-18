@@ -5,7 +5,7 @@ class StringSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.String
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'string/required-but-missing',
     NOT_OF_TYPE: 'string/not-of-type',
-    NULL_NOT_ALLOWED: 'array/null-not-allowed',
+    NULL_NOT_ALLOWED: 'string/null-not-allowed',
     NOT_EMPTY: 'string/not-empty',
     NOT_ALLOWED: 'string/not-allowed',
     REGEX_FAILED: 'string/regex-failed',

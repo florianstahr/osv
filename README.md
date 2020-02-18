@@ -259,6 +259,16 @@ Everything from `BaseSchemaType` and ...
 | --- | :---: | :---: | ---: |
 | `allowNull?` | allow `null` as a valid value | `boolean` | 
 
+### CustomSchemaType - `OSV.custom(options)` - `ObjectSchema.Types.Custom`
+
+#### Options
+
+Everything from `BaseSchemaType` and ...
+
+| Option Path | Info | Type | Default |
+| --- | :---: | :---: | ---: |
+| `validate` | custom validation callback | see [options](https://github.com/florianstahr/osv/tree/master/src/types/schema-types/custom.schema-types.types.ts) or [callback](https://github.com/florianstahr/osv/tree/master/src/types/schema.types.ts#L38) type | 
+
 ### NumberSchemaType - `OSV.number(options)` - `ObjectSchema.Types.Number`
 
 #### Options

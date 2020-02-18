@@ -39,6 +39,20 @@ describe('ObjectSchema', () => {
     });
   });
 
+  describe('basic', () => {
+    it('should fail#expected-object', () => {
+      const schema = OSV.schema({
+        key: OSV.string({ required: true }),
+      });
+
+      return schema.validate(null)
+        .should.be.rejectedWith(OSV.helpers.createValidationError({
+          code: OSV.validationErrorCodes.EXPECTED_OBJECT,
+          path: [],
+        }).message);
+    });
+  });
+
   describe('Types', () => {
     // Type - String
     // -------------------------------------------------------------------------
@@ -616,6 +630,59 @@ describe('ObjectSchema', () => {
             expect(e.path).to.equal('foo.1.bar');
           })
           .should.be.fulfilled);
+      });
+    });
+
+    // Type - Custom
+    // -------------------------------------------------------------------------
+
+    describe('Custom', () => {
+      const callback: OSVTypeRef.Schema.ValidateWithOptionsCallback = (
+        value,
+        data,
+        path,
+      ) => {
+        if (value === 'CUSTOM') {
+          return { value };
+        }
+
+        return {
+          error: OSV.helpers.createValidationError({
+            code: OSV.validationErrorCodes.custom.FAILED,
+            path,
+            value,
+          }),
+        };
+      };
+
+      const schema = OSV.schema<{
+        key: 'CUSTOM';
+      }>({
+        key: OSV.custom({
+          validate: callback,
+        }),
+      });
+
+      describe('validate', () => {
+        it('should succeed#correct-value', () => schema.validate({
+          key: 'CUSTOM',
+        })
+          .then((data) => {
+            expect(data.key).to.eql('CUSTOM');
+          }).should.be.fulfilled);
+
+        it('should succeed#undefined', () => schema.validate({})
+          .then((data) => {
+            expect(data.key).to.eql(undefined);
+          }).should.be.fulfilled);
+
+        it('should fail#validation-failed', () => schema.validate({
+          key: 'KEY',
+        })
+          .should.be.rejectedWith(OSV.helpers.createValidationError({
+            code: OSV.validationErrorCodes.custom.FAILED,
+            path: ['key'],
+          }).message));
       });
     });
 

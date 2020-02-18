@@ -101,6 +101,7 @@ class ObjectSchema<Data> {
   public static validators: CreateTypeValidators = createTypes;
 
   public static validationErrorCodes = {
+    EXPECTED_OBJECT: 'schema/expected-object',
     UNKNOWN: 'schema/unknown',
   };
 
@@ -225,7 +226,17 @@ class ObjectSchema<Data> {
       };
     }
 
-    if (typeof schema === 'object') {
+    if (typeof schema === 'object' && schema !== null) {
+      if (!path.length && (typeof value !== 'object' || value === null)) {
+        return {
+          error: Helpers.createValidationError({
+            code: ObjectSchema.validationErrorCodes.EXPECTED_OBJECT,
+            path,
+            value,
+          }),
+        };
+      }
+
       const validated: { [key: string]: any } = {};
 
       const keys = Object.keys(schema);
@@ -236,7 +247,7 @@ class ObjectSchema<Data> {
 
         if (checkWhitelistAndBlacklistResult.check) {
           const result = this._validate({
-            value: typeof value === 'object' && value[keys[i]] !== undefined ? value[keys[i]] : undefined,
+            value: typeof value === 'object' && value !== null && value[keys[i]] !== undefined ? value[keys[i]] : undefined,
             data,
             schema: schema[keys[i]],
             path: [...path, keys[i]],

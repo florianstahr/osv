@@ -78,10 +78,8 @@ class BaseSchemaType<Options extends InternalTypeRef.SchemaTypes
   ): boolean => {
     const { required } = this._options;
 
-    return (
-      typeof required === 'function' && required(value, data))
-      || (typeof required === 'boolean' && required
-      );
+    return (typeof required === 'function' && required(value, data))
+      || (typeof required === 'boolean' && required);
   };
 }
 
