@@ -21,26 +21,26 @@ export interface CreateTypeValidators {
   createArrayTypeValidator: InternalTypeRef.SchemaTypes
     .CreateTypeValidator<InternalTypeRef.SchemaTypes.Array.Options, ArraySchemaType>;
   createBaseTypeValidator: InternalTypeRef.SchemaTypes
-    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Base.Options, BaseSchemaType>;
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Base.Options, BaseSchemaType, true>;
   createBooleanTypeValidator: InternalTypeRef.SchemaTypes
-    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Boolean.Options, BooleanSchemaType>;
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Boolean.Options, BooleanSchemaType, true>;
   createNumberTypeValidator: InternalTypeRef.SchemaTypes
-    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Number.Options, NumberSchemaType>;
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Number.Options, NumberSchemaType, true>;
   createOptionalTypeValidator: InternalTypeRef.SchemaTypes
     .CreateTypeValidator<InternalTypeRef.SchemaTypes.Optional.Options, OptionalSchemaType>;
   createStringTypeValidator: InternalTypeRef.SchemaTypes
-    .CreateTypeValidator<InternalTypeRef.SchemaTypes.String.Options, StringSchemaType>;
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.String.Options, StringSchemaType, true>;
   createUnionTypeValidator: InternalTypeRef.SchemaTypes
     .CreateTypeValidator<InternalTypeRef.SchemaTypes.Union.Options, UnionSchemaType>;
 }
 
 const createTypes: CreateTypeValidators = {
   createArrayTypeValidator: (options) => new ArraySchemaType(options),
-  createBaseTypeValidator: (options) => new BaseSchemaType(options),
-  createBooleanTypeValidator: (options) => new BooleanSchemaType(options),
-  createNumberTypeValidator: (options) => new NumberSchemaType(options),
+  createBaseTypeValidator: (options = {}) => new BaseSchemaType(options),
+  createBooleanTypeValidator: (options = {}) => new BooleanSchemaType(options),
+  createNumberTypeValidator: (options = {}) => new NumberSchemaType(options),
   createOptionalTypeValidator: (options) => new OptionalSchemaType(options),
-  createStringTypeValidator: (options) => new StringSchemaType(options),
+  createStringTypeValidator: (options = {}) => new StringSchemaType(options),
   createUnionTypeValidator: (options) => new UnionSchemaType(options),
 };
 

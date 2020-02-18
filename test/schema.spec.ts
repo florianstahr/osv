@@ -16,7 +16,7 @@ describe('ObjectSchema', () => {
       const schema = OSV.schema({
         foo: {
           bar: {
-            foo: OSV.string({}),
+            foo: OSV.string(),
           },
         },
       });
@@ -32,7 +32,7 @@ describe('ObjectSchema', () => {
     });
 
     it('should succeed#just-schema-type', async () => {
-      const schema = OSV.schema(OSV.string({}));
+      const schema = OSV.schema(OSV.string());
 
       return schema.validate('foo')
         .should.to.be.fulfilled;
@@ -45,7 +45,7 @@ describe('ObjectSchema', () => {
 
     describe('String', () => {
       const getStringObjectSchema = (
-        opts: OSVTypeRef.SchemaTypes.String.Options = {},
+        opts?: OSVTypeRef.SchemaTypes.String.Options,
       ): OSVTypeRef.Classes.ObjectSchema<string> => OSV.schema<string>(OSV.string(opts));
 
       describe('required', () => {
@@ -225,7 +225,7 @@ describe('ObjectSchema', () => {
 
     describe('Number', () => {
       const getNumberObjectSchema = (
-        opts: OSVTypeRef.SchemaTypes.Number.Options = {},
+        opts?: OSVTypeRef.SchemaTypes.Number.Options,
       ): OSVTypeRef.Classes.ObjectSchema<number> => OSV.schema<number>(OSV.number(opts));
 
       describe('required', () => {
@@ -413,7 +413,7 @@ describe('ObjectSchema', () => {
 
     describe('Boolean', () => {
       const getBooleanObjectSchema = (
-        opts: OSVTypeRef.SchemaTypes.Boolean.Options = {},
+        opts?: OSVTypeRef.SchemaTypes.Boolean.Options,
       ): OSVTypeRef.Classes.ObjectSchema<boolean> => OSV.schema<boolean>(OSV.boolean(opts));
 
       describe('required', () => {
@@ -811,7 +811,7 @@ describe('ObjectSchema', () => {
 
     describe('ObjectSchema', () => {
       const getObjectSchemaObjectSchema = (
-        opts: OSVTypeRef.SchemaTypes.String.Options = {},
+        opts?: OSVTypeRef.SchemaTypes.String.Options,
       ): OSVTypeRef.Classes.ObjectSchema<string> => OSV.schema<string>(
         OSV.schema<string>(OSV.string(opts)),
       );
@@ -848,8 +848,8 @@ describe('ObjectSchema', () => {
         email: OSV.string({ required: true }),
         info: {
           person: {
-            firstName: OSV.string({ }),
-            lastName: OSV.string({ }),
+            firstName: OSV.string(),
+            lastName: OSV.string(),
           },
         },
         followers: OSV.array({
@@ -884,8 +884,8 @@ describe('ObjectSchema', () => {
 
       const personInfoSchema = OSV.schema<PersonInfo>({
         person: {
-          firstName: OSV.string({ }),
-          lastName: OSV.string({ }),
+          firstName: OSV.string(),
+          lastName: OSV.string(),
         },
       });
 

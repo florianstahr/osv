@@ -19,12 +19,14 @@ export interface Exposed {
 
   // schema types
   array: SchemaTypes.CreateTypeValidator<SchemaTypes.Array.Options, Classes.SchemaTypes.Array>;
-  boolean: SchemaTypes
-    .CreateTypeValidator<SchemaTypes.Boolean.Options, Classes.SchemaTypes.Boolean>;
-  number: SchemaTypes.CreateTypeValidator<SchemaTypes.Number.Options, Classes.SchemaTypes.Number>;
+  boolean: SchemaTypes.CreateTypeValidator<SchemaTypes.Boolean.Options, Classes
+    .SchemaTypes.Boolean, true>;
+  number: SchemaTypes.CreateTypeValidator<SchemaTypes.Number.Options, Classes
+    .SchemaTypes.Number, true>;
   optional: SchemaTypes
     .CreateTypeValidator<SchemaTypes.Optional.Options, Classes.SchemaTypes.Optional>;
-  string: SchemaTypes.CreateTypeValidator<SchemaTypes.String.Options, Classes.SchemaTypes.String>;
+  string: SchemaTypes.CreateTypeValidator<SchemaTypes.String.Options, Classes
+    .SchemaTypes.String, true>;
   union: SchemaTypes.CreateTypeValidator<SchemaTypes.Union.Options, Classes.SchemaTypes.Union>;
 
   // other
