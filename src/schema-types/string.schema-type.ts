@@ -1,12 +1,11 @@
-import BaseSchemaType, { InternalValidationResult } from './base.schema-type';
-import { StringSchemaTypeOptions } from './types';
-import { DeepPartial } from '../helpers.types';
+import BaseSchemaType from './base.schema-type';
+import InternalTypeRef from '../types/internal.type-ref';
 
-class StringSchemaType<Data> extends BaseSchemaType<Data, StringSchemaTypeOptions> {
+class StringSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.String.Options> {
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'string/required-but-missing',
     NOT_OF_TYPE: 'string/not-of-type',
-    NULL_NOT_ALLOWED: 'array/null-not-allowed',
+    NULL_NOT_ALLOWED: 'string/null-not-allowed',
     NOT_EMPTY: 'string/not-empty',
     NOT_ALLOWED: 'string/not-allowed',
     REGEX_FAILED: 'string/regex-failed',
@@ -15,13 +14,15 @@ class StringSchemaType<Data> extends BaseSchemaType<Data, StringSchemaTypeOption
     TOO_LONG: 'string/too-long',
   };
 
-  public constructor(options: StringSchemaTypeOptions = {}) {
+  public constructor(options: InternalTypeRef.SchemaTypes.String.Options = {}) {
     super(options);
   }
 
   protected _validateWithOptions = (
-    value: any, data: DeepPartial<Data>, path: string[],
-  ): InternalValidationResult<any> => {
+    value: any,
+    data: any,
+    path: string[],
+  ): InternalTypeRef.Validation.Result => {
     const {
       allowNull, empty = true, oneOf, regex, length, minLength, maxLength,
     } = this._options;

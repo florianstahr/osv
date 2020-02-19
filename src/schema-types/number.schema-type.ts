@@ -1,12 +1,11 @@
-import BaseSchemaType, { InternalValidationResult } from './base.schema-type';
-import { NumberSchemaTypeOptions } from './types';
-import { DeepPartial } from '../helpers.types';
+import BaseSchemaType from './base.schema-type';
+import InternalTypeRef from '../types/internal.type-ref';
 
-class NumberSchemaType<Data> extends BaseSchemaType<Data, NumberSchemaTypeOptions> {
+class NumberSchemaType extends BaseSchemaType<InternalTypeRef.SchemaTypes.Number.Options> {
   public static validationErrorCodes = {
     REQUIRED_BUT_MISSING: 'number/required-but-missing',
     NOT_OF_TYPE: 'number/not-of-type',
-    NULL_NOT_ALLOWED: 'array/null-not-allowed',
+    NULL_NOT_ALLOWED: 'number/null-not-allowed',
     MIN: 'number/min',
     MAX: 'number/max',
     GREATER: 'number/greater',
@@ -16,13 +15,15 @@ class NumberSchemaType<Data> extends BaseSchemaType<Data, NumberSchemaTypeOption
     NEGATIVE: 'number/negative',
   };
 
-  public constructor(options: NumberSchemaTypeOptions = {}) {
+  public constructor(options: InternalTypeRef.SchemaTypes.Number.Options = {}) {
     super(options);
   }
 
   protected _validateWithOptions = (
-    value: any, data: DeepPartial<Data>, path: string[],
-  ): InternalValidationResult<any> => {
+    value: any,
+    data: any,
+    path: string[],
+  ): InternalTypeRef.Validation.Result => {
     const {
       allowNull, min, max, greater, less, integer, positive, negative,
     } = this._options;

@@ -1,56 +1,24 @@
-/* eslint-disable no-param-reassign,@typescript-eslint/array-type */
-import BaseSchemaType, {
-  InternalValidationResult, ValidationError,
-  ValidationResult,
-} from './schema-types/base.schema-type';
-import SchemaTypes from './schema-types';
-
-export interface ObjectSchemaValidationOptions {
-  check?: {
-    whitelist?: string[];
-    blacklist?: string[];
-  };
-}
-
-export type Validator<Data> = BaseSchemaType<Data> | ObjectSchema<Data>;
-
-export interface SchemaDefinitionObject<Data> {
-  [path: string]: SchemaDefinitionObject<Data> | Validator<Data>;
-}
-
-export type SchemaDefinition<Data> = SchemaDefinitionObject<Data> | Validator<Data>;
-
-export interface SchemaPath<Data> {
-  path: string;
-  validator: Validator<Data>;
-}
-
-export interface SchemaValidateArgs<Data> {
-  value: any;
-  data: any;
-  schema: SchemaDefinition<Data> | Validator<Data>;
-  path: string[];
-  check: {
-    whitelist: string[];
-    blacklist: string[];
-  };
-}
+import BaseSchemaType from './schema-types/base.schema-type';
+import SchemaTypes, { createTypes, CreateTypeValidators } from './schema-types/index.schema-types';
+import InternalTypeRef from './types/internal.type-ref';
+import ValidationError from './validation/error.validation';
+import Helpers from './helpers';
 
 const prepareSchemaWhiteAndBlacklistPaths = (
   paths: string[], currentPath: string,
 ): string[] => {
   const regex = new RegExp(`^${currentPath}`);
-  return paths.map((path) => {
+  return paths.map(path => {
     if (!!path && regex.test(path)) {
       return path.replace(regex, '').replace(/^\./, '');
     }
     return '';
-  }).filter(path => !!path);
+  }).filter((path): boolean => !!path);
 };
 
 const checkWhitelistAndBlacklist = (check: {
-  whitelist: string[]; // nur die
-  blacklist: string[]; // alles, aber nicht die
+  whitelist: string[]; // just them
+  blacklist: string[]; // all, but not them
 }, path: string): {
   check: boolean;
   next: {
@@ -76,7 +44,7 @@ const checkWhitelistAndBlacklist = (check: {
 
   if (check.whitelist.length) {
     let isOnWhitelist = false;
-    check.whitelist.forEach((keepPath) => {
+    check.whitelist.forEach(keepPath => {
       if (!isOnWhitelist && pathRegex.test(keepPath)) {
         isOnWhitelist = true;
         if (keepPath !== path) {
@@ -89,7 +57,7 @@ const checkWhitelistAndBlacklist = (check: {
       result.check = false;
     }
   } else if (check.blacklist.length) {
-    check.blacklist.forEach((omitPath) => {
+    check.blacklist.forEach(omitPath => {
       if (result.check && pathRegex.test(omitPath)) {
         if (omitPath !== path) {
           result.next.blacklist.push(omitPath);
@@ -104,27 +72,66 @@ const checkWhitelistAndBlacklist = (check: {
 };
 
 class ObjectSchema<Data> {
-  protected _original: SchemaDefinition<Data>;
+  protected _original: InternalTypeRef.Schema.Definition<Data>;
 
-  protected _parsedTree: SchemaDefinition<Data>;
+  protected _parsedTree: InternalTypeRef.Schema.Definition<Data>;
 
-  protected _paths: SchemaPath<Data>[] = [];
+  protected _paths: InternalTypeRef.Schema.Path<Data>[] = [];
 
-  public static Types = SchemaTypes;
+  // -----------------------------------------------------------------------------------------------
+  // constructor
 
-  public static validationErrorCodes = {
-    UNKNOWN: 'schema/unknown',
-  };
-
-  public constructor(definition: SchemaDefinition<Data>) {
+  public constructor(definition: InternalTypeRef.Schema.Definition<Data>) {
     this._original = definition;
 
     this._parsedTree = this._parseSchemaDefinition(definition);
   }
 
+  // -----------------------------------------------------------------------------------------------
+  // public statics
+
+  public static create = <Data>(
+    definition: InternalTypeRef.Schema.Definition<Data>,
+  ): ObjectSchema<Data> => new ObjectSchema<Data>(definition);
+
+  public static helpers: InternalTypeRef.Helpers.Exposed = Helpers;
+
+  public static Types = SchemaTypes;
+
+  public static validators: CreateTypeValidators = createTypes;
+
+  public static validationErrorCodes = {
+    EXPECTED_OBJECT: 'schema/expected-object',
+    UNKNOWN: 'schema/unknown',
+  };
+
+  public static isValidValidator = (
+    validator: any,
+  ): boolean => validator instanceof SchemaTypes.Base || validator instanceof ObjectSchema;
+
+  public static isObjectSchema = <Data extends any>(
+    value: any,
+  ): value is ObjectSchema<Data> => value instanceof ObjectSchema;
+
+  // -----------------------------------------------------------------------------------------------
+  // public methods
+
   public validate = (
-    value: any, options: ObjectSchemaValidationOptions = {},
-  ): ValidationResult<Data> => {
+    value: any,
+    options: InternalTypeRef.Schema.ValidationOptions = {},
+  ): Promise<Data> => {
+    const result = this.validateSync(value, options);
+
+    if (result.error) {
+      return Promise.reject(result.error);
+    }
+    return Promise.resolve(result.value as Data);
+  };
+
+  public validateSync = (
+    value: any,
+    options: InternalTypeRef.Schema.ValidationOptions = {},
+  ): InternalTypeRef.Validation.Result<Data> => {
     const result = this._validate({
       value,
       data: value,
@@ -139,40 +146,38 @@ class ObjectSchema<Data> {
     });
 
     if (result !== null) {
-      return this._makeValidationResult(result);
+      return result;
     }
 
-    return this._makeValidationResult({
+    return {
       error: new ValidationError({
         code: ObjectSchema.validationErrorCodes.UNKNOWN,
         path: [],
       }),
-    });
+    };
   };
 
-  public static isValidValidator = (validator: any): boolean => validator
-    instanceof SchemaTypes.Base || validator instanceof ObjectSchema;
-
-  public static isObjectSchema = <Data extends any>(
-    value: any,
-  ): value is ObjectSchema<Data> => value instanceof ObjectSchema;
+  // -----------------------------------------------------------------------------------------------
+  // protected methods
 
   protected _parseSchemaDefinition = (
-    schema: SchemaDefinition<Data>, path: string[] = [],
-  ): SchemaDefinition<Data> => {
+    schema: InternalTypeRef.Schema.Definition<Data>,
+    path: string[] = [],
+  ): InternalTypeRef.Schema.Definition<Data> => {
     if (ObjectSchema.isValidValidator(schema)) {
       this._paths.push({
         path: path.join('.'),
-        validator: schema as Validator<Data>,
+        validator: schema as InternalTypeRef.Schema.Validator<Data>,
       });
       return schema;
     }
 
     if (typeof schema === 'object') {
-      const parsed: SchemaDefinitionObject<Data> = {};
-      Object.keys(schema).forEach((schemaKey) => {
+      const parsed: InternalTypeRef.Schema.DefinitionObject<Data> = {};
+      Object.keys(schema).forEach(schemaKey => {
         const nestedParsed = this._parseSchemaDefinition(
-          (schema as SchemaDefinitionObject<Data>)[schemaKey] as SchemaDefinition<Data>,
+          (schema as InternalTypeRef.Schema
+            .DefinitionObject<Data>)[schemaKey] as InternalTypeRef.Schema.Definition<Data>,
           [...path, schemaKey],
         );
 
@@ -192,8 +197,8 @@ class ObjectSchema<Data> {
   protected _validate = (
     {
       value, data, schema, path, check,
-    }: SchemaValidateArgs<Data>,
-  ): InternalValidationResult<any> | null => {
+    }: InternalTypeRef.Schema.ValidateInput<Data>,
+  ): InternalTypeRef.Validation.Result<Data> | null => {
     if (schema instanceof BaseSchemaType) {
       return schema.validate(value, data, path, {
         whitelist: prepareSchemaWhiteAndBlacklistPaths(check.whitelist, path.join('.')),
@@ -202,7 +207,7 @@ class ObjectSchema<Data> {
     }
 
     if (ObjectSchema.isObjectSchema<Data>(schema)) {
-      const validationResult = (schema as ObjectSchema<Data>).validate(value, {
+      const validationResult = (schema as ObjectSchema<Data>).validateSync(value, {
         check: {
           whitelist: prepareSchemaWhiteAndBlacklistPaths(check.whitelist, path.join('.')),
           blacklist: prepareSchemaWhiteAndBlacklistPaths(check.blacklist, path.join('.')),
@@ -221,7 +226,17 @@ class ObjectSchema<Data> {
       };
     }
 
-    if (typeof schema === 'object') {
+    if (typeof schema === 'object' && schema !== null) {
+      if (!path.length && (typeof value !== 'object' || value === null)) {
+        return {
+          error: Helpers.createValidationError({
+            code: ObjectSchema.validationErrorCodes.EXPECTED_OBJECT,
+            path,
+            value,
+          }),
+        };
+      }
+
       const validated: { [key: string]: any } = {};
 
       const keys = Object.keys(schema);
@@ -232,7 +247,7 @@ class ObjectSchema<Data> {
 
         if (checkWhitelistAndBlacklistResult.check) {
           const result = this._validate({
-            value: typeof value === 'object' && value[keys[i]] !== undefined ? value[keys[i]] : undefined,
+            value: typeof value === 'object' && value !== null && value[keys[i]] !== undefined ? value[keys[i]] : undefined,
             data,
             schema: schema[keys[i]],
             path: [...path, keys[i]],
@@ -251,20 +266,11 @@ class ObjectSchema<Data> {
         }
       }
 
-      return { value: validated };
+      return { value: validated as Data };
     }
 
     return null;
   };
-
-  protected _makeValidationResult = (
-    result: InternalValidationResult<Data>,
-  ): ValidationResult<Data> => ({
-    error: result.error,
-    value: result.value,
-    exec: (): Promise<Data> => (result.error
-      ? Promise.reject(result.error) : Promise.resolve<Data>(result.value as Data)),
-  });
 }
 
 export default ObjectSchema;
