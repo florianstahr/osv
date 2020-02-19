@@ -1,5 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import nodeExternals from 'webpack-node-externals';
 import path from 'path';
-import pkg from './package.json';
+import pkg from './package';
 
 export default {
   module: {
@@ -22,4 +25,17 @@ export default {
     extensions: ['.ts', '.js'],
   },
   target: 'node',
+  devtool: 'source-map',
+  entry: [
+    path.join(__dirname, 'src/index.ts'),
+  ],
+  externals: [
+    nodeExternals({}),
+  ],
+  mode: 'production',
+  plugins: [
+    new CleanWebpackPlugin({
+      clearOnceBeforeBuildPatterns: ['dist'],
+    }),
+  ],
 };
