@@ -19,7 +19,9 @@
     "libraryName": "OSV"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha"
+    "test": "NODE_ENV=test mocha",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:quiet": "eslint --quiet 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "dependencies": {},
   "devDependencies": {
