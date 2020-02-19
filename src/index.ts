@@ -17,13 +17,13 @@ const OSV: OSVTypeRef.Exposed = {
   ) => new ObjectSchema<Data>(definition),
 
   // schema types
-  array: (options) => ObjectSchema.validators.createArrayTypeValidator(options),
-  boolean: (options) => ObjectSchema.validators.createBooleanTypeValidator(options),
-  custom: (options) => ObjectSchema.validators.createCustomTypeValidator(options),
-  number: (options) => ObjectSchema.validators.createNumberTypeValidator(options),
-  optional: (options) => ObjectSchema.validators.createOptionalTypeValidator(options),
-  string: (options) => ObjectSchema.validators.createStringTypeValidator(options),
-  union: (options) => ObjectSchema.validators.createUnionTypeValidator(options),
+  array: options => ObjectSchema.validators.createArrayTypeValidator(options),
+  boolean: options => ObjectSchema.validators.createBooleanTypeValidator(options),
+  custom: options => ObjectSchema.validators.createCustomTypeValidator(options),
+  number: options => ObjectSchema.validators.createNumberTypeValidator(options),
+  optional: options => ObjectSchema.validators.createOptionalTypeValidator(options),
+  string: options => ObjectSchema.validators.createStringTypeValidator(options),
+  union: options => ObjectSchema.validators.createUnionTypeValidator(options),
 
   // other
   helpers: Helpers,

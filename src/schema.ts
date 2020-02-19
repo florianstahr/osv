@@ -8,7 +8,7 @@ const prepareSchemaWhiteAndBlacklistPaths = (
   paths: string[], currentPath: string,
 ): string[] => {
   const regex = new RegExp(`^${currentPath}`);
-  return paths.map((path) => {
+  return paths.map(path => {
     if (!!path && regex.test(path)) {
       return path.replace(regex, '').replace(/^\./, '');
     }
@@ -44,7 +44,7 @@ const checkWhitelistAndBlacklist = (check: {
 
   if (check.whitelist.length) {
     let isOnWhitelist = false;
-    check.whitelist.forEach((keepPath) => {
+    check.whitelist.forEach(keepPath => {
       if (!isOnWhitelist && pathRegex.test(keepPath)) {
         isOnWhitelist = true;
         if (keepPath !== path) {
@@ -57,7 +57,7 @@ const checkWhitelistAndBlacklist = (check: {
       result.check = false;
     }
   } else if (check.blacklist.length) {
-    check.blacklist.forEach((omitPath) => {
+    check.blacklist.forEach(omitPath => {
       if (result.check && pathRegex.test(omitPath)) {
         if (omitPath !== path) {
           result.next.blacklist.push(omitPath);
@@ -174,7 +174,7 @@ class ObjectSchema<Data> {
 
     if (typeof schema === 'object') {
       const parsed: InternalTypeRef.Schema.DefinitionObject<Data> = {};
-      Object.keys(schema).forEach((schemaKey) => {
+      Object.keys(schema).forEach(schemaKey => {
         const nestedParsed = this._parseSchemaDefinition(
           (schema as InternalTypeRef.Schema
             .DefinitionObject<Data>)[schemaKey] as InternalTypeRef.Schema.Definition<Data>,

@@ -39,14 +39,14 @@ export interface CreateTypeValidators {
 }
 
 const createTypes: CreateTypeValidators = {
-  createArrayTypeValidator: (options) => new ArraySchemaType(options),
+  createArrayTypeValidator: options => new ArraySchemaType(options),
   createBaseTypeValidator: (options = {}) => new BaseSchemaType(options),
   createBooleanTypeValidator: (options = {}) => new BooleanSchemaType(options),
-  createCustomTypeValidator: (options) => new CustomSchemaType(options),
+  createCustomTypeValidator: options => new CustomSchemaType(options),
   createNumberTypeValidator: (options = {}) => new NumberSchemaType(options),
-  createOptionalTypeValidator: (options) => new OptionalSchemaType(options),
+  createOptionalTypeValidator: options => new OptionalSchemaType(options),
   createStringTypeValidator: (options = {}) => new StringSchemaType(options),
-  createUnionTypeValidator: (options) => new UnionSchemaType(options),
+  createUnionTypeValidator: options => new UnionSchemaType(options),
 };
 
 export {

@@ -67,7 +67,7 @@ describe('ObjectSchema', () => {
           required: true,
         })
           .validate('')
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal('');
           })
           .should.be.fulfilled);
@@ -87,7 +87,7 @@ describe('ObjectSchema', () => {
           allowNull: true,
         })
           .validate(null)
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql(null);
           })
           .should.be.fulfilled);
@@ -98,7 +98,7 @@ describe('ObjectSchema', () => {
           }),
         })
           .validate({ foo: null })
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql({ foo: null });
           })
           .should.be.fulfilled);
@@ -118,7 +118,7 @@ describe('ObjectSchema', () => {
           oneOf: ['foo', 'bar'],
         })
           .validate('foo')
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal('foo');
           })
           .should.be.fulfilled);
@@ -138,7 +138,7 @@ describe('ObjectSchema', () => {
           empty: true,
         })
           .validate('')
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal('');
           })
           .should.be.fulfilled);
@@ -158,7 +158,7 @@ describe('ObjectSchema', () => {
           regex: /^foo/,
         })
           .validate('foobar')
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal('foobar');
           })
           .should.be.fulfilled);
@@ -178,7 +178,7 @@ describe('ObjectSchema', () => {
           length: 3,
         })
           .validate('foo')
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal('foo');
           })
           .should.be.fulfilled);
@@ -198,7 +198,7 @@ describe('ObjectSchema', () => {
           minLength: 3,
         })
           .validate('foo')
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal('foo');
           })
           .should.be.fulfilled);
@@ -218,7 +218,7 @@ describe('ObjectSchema', () => {
           maxLength: 3,
         })
           .validate('foo')
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal('foo');
           })
           .should.be.fulfilled);
@@ -247,7 +247,7 @@ describe('ObjectSchema', () => {
           required: true,
         })
           .validate(6.12765890)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(6.12765890);
           })
           .should.be.fulfilled);
@@ -267,7 +267,7 @@ describe('ObjectSchema', () => {
           allowNull: true,
         })
           .validate(null)
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql(null);
           })
           .should.be.fulfilled);
@@ -287,7 +287,7 @@ describe('ObjectSchema', () => {
           min: 6,
         })
           .validate(6)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(6);
           })
           .should.be.fulfilled);
@@ -307,7 +307,7 @@ describe('ObjectSchema', () => {
           max: 6,
         })
           .validate(6)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(6);
           })
           .should.be.fulfilled);
@@ -327,7 +327,7 @@ describe('ObjectSchema', () => {
           greater: 6,
         })
           .validate(6.1)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(6.1);
           }).should.be.fulfilled);
 
@@ -346,7 +346,7 @@ describe('ObjectSchema', () => {
           less: 6,
         })
           .validate(5.99)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(5.99);
           })
           .should.be.fulfilled);
@@ -366,7 +366,7 @@ describe('ObjectSchema', () => {
           integer: true,
         })
           .validate(6)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(6);
           })
           .should.be.fulfilled);
@@ -386,7 +386,7 @@ describe('ObjectSchema', () => {
           positive: true,
         })
           .validate(6)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(6);
           })
           .should.be.fulfilled);
@@ -406,7 +406,7 @@ describe('ObjectSchema', () => {
           negative: true,
         })
           .validate(-6)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(-6);
           })
           .should.be.fulfilled);
@@ -435,7 +435,7 @@ describe('ObjectSchema', () => {
           required: true,
         })
           .validate(false)
-          .then((data) => {
+          .then(data => {
             expect(data).to.equal(false);
           })
           .should.be.fulfilled);
@@ -455,7 +455,7 @@ describe('ObjectSchema', () => {
           allowNull: true,
         })
           .validate(null)
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql(null);
           })
           .should.be.fulfilled);
@@ -489,7 +489,7 @@ describe('ObjectSchema', () => {
           required: true,
         })
           .validate(['foo'])
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql(['foo']);
           }).should.be.fulfilled);
 
@@ -508,7 +508,7 @@ describe('ObjectSchema', () => {
           allowNull: true,
         })
           .validate(null)
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql(null);
           }).should.be.fulfilled);
 
@@ -527,7 +527,7 @@ describe('ObjectSchema', () => {
           min: 2,
         })
           .validate(['foo', 'bar'])
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
 
@@ -546,7 +546,7 @@ describe('ObjectSchema', () => {
           max: 2,
         })
           .validate(['foo', 'bar'])
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
 
@@ -565,7 +565,7 @@ describe('ObjectSchema', () => {
           length: 2,
         })
           .validate(['foo', 'bar'])
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql(['foo', 'bar']);
           }).should.be.fulfilled);
 
@@ -598,7 +598,7 @@ describe('ObjectSchema', () => {
               { bar: 'bar' },
             ],
           })
-          .then((data) => {
+          .then(data => {
             expect(data).to.eql({
               foo: [
                 { bar: 'foo' },
@@ -667,12 +667,12 @@ describe('ObjectSchema', () => {
         it('should succeed#correct-value', () => schema.validate({
           key: 'CUSTOM',
         })
-          .then((data) => {
+          .then(data => {
             expect(data.key).to.eql('CUSTOM');
           }).should.be.fulfilled);
 
         it('should succeed#undefined', () => schema.validate({})
-          .then((data) => {
+          .then(data => {
             expect(data.key).to.eql(undefined);
           }).should.be.fulfilled);
 
@@ -700,7 +700,7 @@ describe('ObjectSchema', () => {
         });
 
         it('should succeed', () => schema.validate({})
-          .then((value) => {
+          .then(value => {
             expect(value).to.eql({});
           }).should.be.fulfilled);
 
@@ -726,7 +726,7 @@ describe('ObjectSchema', () => {
         it('should succeed', () => schema.validate({
           optional: null,
         })
-          .then((value) => {
+          .then(value => {
             expect(value).to.eql({
               optional: null,
             });
@@ -757,7 +757,7 @@ describe('ObjectSchema', () => {
         it('should succeed#required#schema-1', () => schema.validate({
           union: 'test',
         })
-          .then((value) => {
+          .then(value => {
             expect(value).to.eql({
               union: 'test',
             });
@@ -771,7 +771,7 @@ describe('ObjectSchema', () => {
             },
           },
         })
-          .then((value) => {
+          .then(value => {
             expect(value).to.eql({
               union: {
                 test: {
@@ -833,7 +833,7 @@ describe('ObjectSchema', () => {
         it('should succeed#schema-1', () => schema.validate({
           union: 'test',
         })
-          .then((value) => {
+          .then(value => {
             expect(value).to.eql({
               union: 'test',
             });
@@ -847,7 +847,7 @@ describe('ObjectSchema', () => {
             },
           },
         })
-          .then((value) => {
+          .then(value => {
             expect(value).to.eql({
               union: {
                 test: {
@@ -888,7 +888,7 @@ describe('ObjectSchema', () => {
         empty: false,
       })
         .validate('foo')
-        .then((data) => {
+        .then(data => {
           expect(data).to.equal('foo');
         }).should.be.fulfilled);
     });

@@ -12,7 +12,9 @@
     "indent": "off",
     "@typescript-eslint/indent": ["error", 2],
     "no-underscore-dangle": "off",
-    "import/no-cycle": "warn"
+    "import/no-cycle": "warn",
+    "no-param-reassign": "off",
+    "arrow-parens": ["error", "as-needed"]
   },
   "plugins": ["@typescript-eslint", "mocha"]
 }
