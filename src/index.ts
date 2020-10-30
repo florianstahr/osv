@@ -7,6 +7,7 @@ import BooleanSchemaType from './schema-types/boolean.schema-type';
 import CustomSchemaType from './schema-types/custom.schema-type';
 import NumberSchemaType from './schema-types/number.schema-type';
 import OptionalSchemaType from './schema-types/optional.schema-type';
+import RecordSchemaType from './schema-types/record.schema-type';
 import StringSchemaType from './schema-types/string.schema-type';
 import UnionSchemaType from './schema-types/union.schema-type';
 import ValidationError from './validation/error.validation';
@@ -22,6 +23,7 @@ const OSV: OSVTypeRef.Exposed = {
   custom: options => ObjectSchema.validators.createCustomTypeValidator(options),
   number: options => ObjectSchema.validators.createNumberTypeValidator(options),
   optional: options => ObjectSchema.validators.createOptionalTypeValidator(options),
+  record: options => ObjectSchema.validators.createRecordTypeValidator(options),
   string: options => ObjectSchema.validators.createStringTypeValidator(options),
   union: options => ObjectSchema.validators.createUnionTypeValidator(options),
 
@@ -34,6 +36,7 @@ const OSV: OSVTypeRef.Exposed = {
     custom: CustomSchemaType.validationErrorCodes,
     number: NumberSchemaType.validationErrorCodes,
     optional: OptionalSchemaType.validationErrorCodes,
+    record: RecordSchemaType.validationErrorCodes,
     string: StringSchemaType.validationErrorCodes,
     union: UnionSchemaType.validationErrorCodes,
   },
@@ -50,6 +53,7 @@ export {
   CustomSchemaType,
   NumberSchemaType,
   OptionalSchemaType,
+  RecordSchemaType,
   StringSchemaType,
   UnionSchemaType,
 

@@ -12,6 +12,7 @@ import BooleanSchemaType from '../schema-types/boolean.schema-type';
 import CustomSchemaType from '../schema-types/custom.schema-type';
 import NumberSchemaType from '../schema-types/number.schema-type';
 import OptionalSchemaType from '../schema-types/optional.schema-type';
+import RecordSchemaType from '../schema-types/record.schema-type';
 import StringSchemaType from '../schema-types/string.schema-type';
 import UnionSchemaType from '../schema-types/union.schema-type';
 
@@ -27,6 +28,8 @@ export interface Exposed {
     .SchemaTypes.Number, true>;
   optional: SchemaTypes
     .CreateTypeValidator<SchemaTypes.Optional.Options, Classes.SchemaTypes.Optional>;
+  record: SchemaTypes
+    .CreateTypeValidator<SchemaTypes.Record.Options, Classes.SchemaTypes.Record>;
   string: SchemaTypes.CreateTypeValidator<SchemaTypes.String.Options, Classes
     .SchemaTypes.String, true>;
   union: SchemaTypes.CreateTypeValidator<SchemaTypes.Union.Options, Classes.SchemaTypes.Union>;
@@ -39,6 +42,7 @@ export interface Exposed {
     custom: typeof CustomSchemaType.validationErrorCodes;
     number: typeof NumberSchemaType.validationErrorCodes;
     optional: typeof OptionalSchemaType.validationErrorCodes;
+    record: typeof RecordSchemaType.validationErrorCodes;
     string: typeof StringSchemaType.validationErrorCodes;
     union: typeof UnionSchemaType.validationErrorCodes;
   };

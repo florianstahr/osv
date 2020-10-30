@@ -297,6 +297,19 @@ Everything from `BaseSchemaType` and ...
 | **`item`** | array item object schema | `ObjectSchema` | |
 | `allowNull?` | allow `null` as a valid value | `boolean` | |
 
+### RecordSchemaType - `OSV.record(options)` - `ObjectSchema.Types.Record`
+
+#### Options
+
+Everything from `BaseSchemaType` and ...
+
+| Option Path | Info | Type | Default |
+| --- | :---: | :---: | ---: |
+| **`values`** | key value object schema | `ObjectSchema` | |
+| `keys?` | a validator instance or an array of allowed keys | `CustomSchemaType \| StringSchemaType \| string[]` | |
+| `allowNull?` | allow `null` as a valid value | `boolean` | |
+| `allowNullValues?` | allow a key value to be `null` | `boolean` | |
+
 ### StringSchemaType - `OSV.string(options)` - `ObjectSchema.Types.String`
 
 #### Options
