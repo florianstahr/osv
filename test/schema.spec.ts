@@ -734,6 +734,191 @@ describe('ObjectSchema', () => {
       });
     });
 
+    describe('Record', () => {
+      describe('no-key-validation', () => {
+        const schema = OSV.schema(OSV.record({
+          values: OSV.schema(OSV.union({
+            required: true,
+            schemas: [
+              OSV.schema({
+                str: OSV.string({ required: true }),
+              }),
+              OSV.schema(OSV.number({ required: true, integer: true })),
+            ],
+          })),
+        }));
+
+        it('should succeed', () => schema.validate({
+          myKey: {
+            str: 'a string',
+          },
+          myKey2: 5,
+        })
+          .then(value => {
+            expect(value).to.eql({
+              myKey: {
+                str: 'a string',
+              },
+              myKey2: 5,
+            });
+          })
+          .should.be.fulfilled);
+
+        it('should fail#not-of-type', () => schema.validate(5)
+          .catch((error: OSVTypeRef.Classes.ValidationError) => {
+            expect(error.code).to.equal(OSV.validationErrorCodes.record.NOT_OF_TYPE);
+            expect(error.path).to.equal('');
+          })
+          .should.be.fulfilled);
+
+        it('should fail#invalid-string-value', () => schema.validate({
+          myKey: {
+            str: null,
+          },
+          myKey2: 5,
+        })
+          .catch((error: OSVTypeRef.Classes.ValidationError) => {
+            expect(error.code).to.equal(OSV.validationErrorCodes.union.ALL_SCHEMAS_INVALID);
+            expect(error.path).to.equal('myKey');
+          })
+          .should.be.fulfilled);
+
+        it('should fail#null-key-value-not-allowed', () => schema.validate({
+          myKey: null,
+          myKey2: 5,
+        })
+          .catch((error: OSVTypeRef.Classes.ValidationError) => {
+            expect(error.code).to.equal(OSV.validationErrorCodes.record.NULL_KEY_VALUE_NOT_ALLOWED);
+            expect(error.path).to.equal('myKey');
+          })
+          .should.be.fulfilled);
+      });
+
+      describe('with-key-validation', () => {
+        describe('validator', () => {
+          const schema = OSV.schema(OSV.record({
+            keys: OSV.string({ required: true, regex: /^myKey[1-2]?$/, }),
+            values: OSV.schema(OSV.union({
+              required: true,
+              schemas: [
+                OSV.schema({
+                  str: OSV.string({ required: true }),
+                }),
+                OSV.schema(OSV.number({ required: true, integer: true })),
+              ],
+            })),
+          }));
+
+          it('should succeed', () => schema.validate({
+            myKey: {
+              str: 'a string',
+            },
+            myKey1: 5,
+            myKey2: 6,
+          })
+            .then(value => {
+              expect(value).to.eql({
+                myKey: {
+                  str: 'a string',
+                },
+                myKey1: 5,
+                myKey2: 6,
+              });
+            })
+            .should.be.fulfilled);
+
+          it('should fail#invalid-key', () => schema.validate({
+            myKey: {
+              str: 'a string',
+            },
+            myKey2: 6,
+            myKey3: 5,
+          })
+            .catch((error: OSVTypeRef.Classes.ValidationError) => {
+              expect(error.code).to.equal(OSV.validationErrorCodes.record.INVALID_KEY);
+              expect(error.path).to.equal('myKey3');
+            })
+            .should.be.fulfilled);
+        });
+
+        describe('allowed keys array', () => {
+          const schema = OSV.schema(OSV.record({
+            keys: ['myKey', 'myKey1'],
+            values: OSV.schema(OSV.union({
+              required: true,
+              schemas: [
+                OSV.schema({
+                  str: OSV.string({ required: true }),
+                }),
+                OSV.schema(OSV.number({ required: true, integer: true })),
+              ],
+            })),
+          }));
+
+          it('should succeed', () => schema.validate({
+            myKey: {
+              str: 'a string',
+            },
+            myKey1: 5,
+          })
+            .then(value => {
+              expect(value).to.eql({
+                myKey: {
+                  str: 'a string',
+                },
+                myKey1: 5,
+              });
+            })
+            .should.be.fulfilled);
+
+          it('should fail#invalid-key', () => schema.validate({
+            myKey: {
+              str: 'a string',
+            },
+            myKey1: 6,
+            myKey3: 5,
+          })
+            .catch((error: OSVTypeRef.Classes.ValidationError) => {
+              expect(error.code).to.equal(OSV.validationErrorCodes.record.INVALID_KEY);
+              expect(error.path).to.equal('myKey3');
+            })
+            .should.be.fulfilled);
+        });
+      });
+
+      describe('allow null values', () => {
+        const schema = OSV.schema(OSV.record({
+          keys: ['myKey', 'myKey1'],
+          values: OSV.schema(OSV.union({
+            required: true,
+            schemas: [
+              OSV.schema({
+                str: OSV.string({ required: true }),
+              }),
+              OSV.schema(OSV.number({ required: true, integer: true })),
+            ],
+          })),
+          allowNullValues: true,
+        }));
+
+        it('should succeed', () => schema.validate({
+          myKey: {
+            str: 'a string',
+          },
+          myKey1: null,
+        })
+          .then(value => {
+            expect(value).to.eql({
+              myKey: {
+                str: 'a string',
+              },
+              myKey1: null,
+            });
+          })
+          .should.be.fulfilled);
+      });
+    });
+
     // Type - Union
     // -------------------------------------------------------------------------
 

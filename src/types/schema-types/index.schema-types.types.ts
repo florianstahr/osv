@@ -4,6 +4,7 @@ import * as Boolean from './boolean.schema-types.types';
 import * as Custom from './custom.schema-types.types';
 import * as Number from './number.schema-types.types';
 import * as Optional from './optional.schema-types.types';
+import * as Record from './record.schema-types.types';
 import * as String from './string.schema-types.types';
 import * as Union from './union.schema-types.types';
 import BaseSchemaType from '../../schema-types/base.schema-type';
@@ -31,6 +32,7 @@ export {
   Custom,
   Number,
   Optional,
+  Record,
   String,
   Union,
 };

@@ -4,6 +4,7 @@ import CustomSchemaType from './custom.schema-type';
 import BooleanSchemaType from './boolean.schema-type';
 import NumberSchemaType from './number.schema-type';
 import OptionalSchemaType from './optional.schema-type';
+import RecordSchemaType from './record.schema-type';
 import StringSchemaType from './string.schema-type';
 import UnionSchemaType from './union.schema-type';
 import InternalTypeRef from '../types/internal.type-ref';
@@ -15,6 +16,7 @@ const SchemaTypes = {
   Custom: CustomSchemaType,
   Optional: OptionalSchemaType,
   Number: NumberSchemaType,
+  Record: RecordSchemaType,
   String: StringSchemaType,
   Union: UnionSchemaType,
 };
@@ -32,6 +34,8 @@ export interface CreateTypeValidators {
     .CreateTypeValidator<InternalTypeRef.SchemaTypes.Number.Options, NumberSchemaType, true>;
   createOptionalTypeValidator: InternalTypeRef.SchemaTypes
     .CreateTypeValidator<InternalTypeRef.SchemaTypes.Optional.Options, OptionalSchemaType>;
+  createRecordTypeValidator: InternalTypeRef.SchemaTypes
+    .CreateTypeValidator<InternalTypeRef.SchemaTypes.Record.Options, RecordSchemaType>;
   createStringTypeValidator: InternalTypeRef.SchemaTypes
     .CreateTypeValidator<InternalTypeRef.SchemaTypes.String.Options, StringSchemaType, true>;
   createUnionTypeValidator: InternalTypeRef.SchemaTypes
@@ -45,6 +49,7 @@ const createTypes: CreateTypeValidators = {
   createCustomTypeValidator: options => new CustomSchemaType(options),
   createNumberTypeValidator: (options = {}) => new NumberSchemaType(options),
   createOptionalTypeValidator: options => new OptionalSchemaType(options),
+  createRecordTypeValidator: options => new RecordSchemaType(options),
   createStringTypeValidator: (options = {}) => new StringSchemaType(options),
   createUnionTypeValidator: options => new UnionSchemaType(options),
 };
